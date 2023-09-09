@@ -1,0 +1,129 @@
+service: failure-flags-examples
+frameworkVersion: '3'
+
+plugins:
+    - serverless-python-requirements
+
+custom:
+  region: ${opt:region, 'us-west-1'}
+  stage: ${opt:stage, 'main'}
+  prefix: '${self:service}-${opt:stage, "main"}'
+  stages:
+    main:
+      endpoint: https://beta.gremlin.com/v1
+      credentialsFile: credentials.yml
+    staging:
+      endpoint: https://beta.staging.gremlin.com/v1
+      credentialsFile: credentials-staging.yml
+    prod:
+      endpoint: https://beta.gremlin.com/v1
+      credentialsFile: credentials.yml
+  endpoint: ${self:custom.stages.${opt:stage, 'main'}.endpoint, 'https://beta.gremlin.com/v1'}
+  credentialsFile: ${self:custom.stages.${opt:stage, 'main'}.credentialsFile, 'credentials.yml'}
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  deploymentPrefix: ${self:custom.prefix}
+
+package:
+  individually: true
+  patterns:
+    - '!**'
+    - '!secrets'
+
+functions:
+  node-demo:
+    package:
+      patterns:
+      - 'node/**'
+    handler: node/index.handler
+    runtime: nodejs16.x
+    architecture: arm64
+    memorySize: 256
+    environment:
+      FAILURE_FLAGS_ENABLED: true
+      GREMLIN_LAMBDA_ENABLED: 1
+      GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
+      GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
+      GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
+      GREMLIN_DEBUG: false
+      GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
+      GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
+    layers:
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+    events:
+      - httpApi:
+          path: /node-demo
+          method: '*'
+
+  python-demo:
+    package:
+      patterns:
+        - 'python/*'
+    module: python
+    handler: demo.handler
+    runtime: python3.11
+    architecture: arm64
+    memorySize: 256
+    environment:
+      FAILURE_FLAGS_ENABLED: true
+      GREMLIN_LAMBDA_ENABLED: 1
+      GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
+      GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
+      GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
+      GREMLIN_DEBUG: false
+      GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
+      GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
+    layers:
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+    events:
+      - httpApi:
+          path: /py-demo
+          method: '*'
+
+  go-demo:
+    package:
+      artifact: 'go/function.zip'
+    handler: bootstrap
+    runtime: provided.al2
+    architecture: arm64
+    memorySize: 256
+    environment:
+      FAILURE_FLAGS_ENABLED: true
+      GREMLIN_LAMBDA_ENABLED: 1
+      GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
+      GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
+      GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
+      GREMLIN_DEBUG: false
+      GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
+      GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
+    layers:
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+    events:
+      - httpApi:
+          path: /go-demo
+          method: '*'
+
+  java-demo:
+    package:
+      artifact: java/build/distributions/demo.zip
+    handler: com.gremlin.demo.failureflags.demo.Handler
+    runtime: java17
+    memorySize: 256
+    environment:
+      FAILURE_FLAGS_ENABLED: true
+      GREMLIN_LAMBDA_ENABLED: 1
+      GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
+      GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
+      GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
+      GREMLIN_DEBUG: false
+      GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
+      GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
+    layers:
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:14
+    events:
+      - httpApi:
+          path: /java-demo
+          method: '*'

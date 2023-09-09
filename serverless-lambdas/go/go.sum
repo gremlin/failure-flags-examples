@@ -1,0 +1,6 @@
+github.com/aws/aws-lambda-go v1.41.0 h1:l/5fyVb6Ud9uYd411xdHZzSf2n86TakxzpvIoz7l+3Y=
+github.com/aws/aws-lambda-go v1.41.0/go.mod h1:jwFe2KmMsHmffA1X2R09hH6lFzJQxzI8qK17ewzbQMM=
+github.com/gremlin/failure-flags-go v0.1.0 h1:1chNL46OEwuK41qvqo1VphOA2tT2+ZgySIqGKRBt3hw=
+github.com/gremlin/failure-flags-go v0.1.0/go.mod h1:hKRkJu41INR5XkjuV2WjpKCIyZ1n27cCriZ+qcaFrMM=
+github.com/gremlin/failure-flags-go v0.2.0 h1:27A7S7U3weoNA7xpPOIpMPV6o9xzCJXHwfpnj89fnoE=
+github.com/gremlin/failure-flags-go v0.2.0/go.mod h1:hKRkJu41INR5XkjuV2WjpKCIyZ1n27cCriZ+qcaFrMM=
