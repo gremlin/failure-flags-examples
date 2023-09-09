@@ -1,0 +1,33 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    maven {
+      url 'https://maven.staging.gremlin.com/'
+    }
+}
+
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
+
+dependencies {
+    implementation(
+        'com.amazonaws:aws-lambda-java-core:1.1.0',
+        'com.amazonaws:aws-lambda-java-log4j:1.0.0',
+        'com.fasterxml.jackson.core:jackson-core:2.8.5',
+        'com.fasterxml.jackson.core:jackson-databind:2.8.5',
+        'com.fasterxml.jackson.core:jackson-annotations:2.8.5',
+        'com.gremlin:failure-flags-java:0.1-SNAPSHOT'
+    )
+}
+
+task buildZip(type: Zip) {
+    baseName = "demo"
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtimeClasspath
+    }
+}
+
+build.dependsOn buildZip
