@@ -67,7 +67,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:12
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:13
     events:
       - httpApi:
           path: /node-demo
@@ -92,7 +92,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:12
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:13
     events:
       - httpApi:
           path: /py-demo
@@ -111,11 +111,11 @@ functions:
       GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
       GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
-      GREMLIN_DEBUG: false
+      GREMLIN_DEBUG: true
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:12
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:13
     events:
       - httpApi:
           path: /go-demo
@@ -133,11 +133,11 @@ functions:
       GREMLIN_TEAM_ID: ${file(./secrets/${self:custom.credentialsFile}):team_id}
       GREMLIN_TEAM_CERTIFICATE: ${file(./secrets/${self:custom.credentialsFile}):team_certificate}
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
-      GREMLIN_DEBUG: false
+      GREMLIN_DEBUG: true
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:12
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:13
     events:
       - httpApi:
           path: /java-demo

@@ -1,9 +1,12 @@
 apply plugin: 'java'
 
+//group 'com.gremlin'
+//version '0.1-SNAPSHOT'
+
 repositories {
     mavenCentral()
     maven {
-      url 'https://maven.staging.gremlin.com/'
+      url 'https://maven.gremlin.com/'
     }
 }
 
@@ -17,15 +20,16 @@ dependencies {
         'com.fasterxml.jackson.core:jackson-core:2.8.5',
         'com.fasterxml.jackson.core:jackson-databind:2.8.5',
         'com.fasterxml.jackson.core:jackson-annotations:2.8.5',
-        'com.gremlin:failure-flags-java:0.1-SNAPSHOT'
+        'com.gremlin:failure-flags-java:1.0'
     )
 }
 
 task buildZip(type: Zip) {
-    baseName = "demo"
+    archiveBaseName = "demo"
     from compileJava
     from processResources
     into('lib') {
+        from jar
         from configurations.runtimeClasspath
     }
 }

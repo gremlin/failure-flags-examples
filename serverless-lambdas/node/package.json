@@ -4,6 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@gremlin/failure-flags": "^0.0"
+    "@gremlin/failure-flags": "^1.0"
   }
 }

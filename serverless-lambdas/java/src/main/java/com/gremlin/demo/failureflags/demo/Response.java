@@ -6,6 +6,6 @@ public class Response {
     this.processingTime = processingTime;
   }
   public String getProcessingTime() {
-    return this.processingTime;
+    return ""+this.processingTime;
   }
 }
