@@ -1,3 +1,179 @@
 # failure-flags-examples
 
 This repository contains simple examples of the Failure Flags SDK, Lambda extension, and coprocess (sidecar).
+
+## AWS Lambda
+
+The Lambda examples in this repository include example Lambda applications and are deployable with the Serverless Framework. To use that example you will need to have the Serverless Framework installed and provide AWS credentials in your environment. 
+
+## Kubernetes
+
+The Kubernetes example uses Failure Flags by Proxy and the canonical Istio demo application. As is this example will pull the latest release of the Failure Flags Sidecar, however it will prefer local cached images for `gremlin/failure-flags-sidecar:latest`. To use this example you will need to provide a completed configuration file in a Kubernetes secret named, `exaxmple-gremlin-secret` and contain a file named, `example-config.yaml`. You can use the following configuration file and replace the values for `team_id`, `team_certificate`, and `team_private_key`.
+
+### example-config.yaml
+
+```yaml
+## Gremlin Team Id - you can find this value at https://app.gremlin.com/settings/teams
+## Override this using GREMLIN_TEAM_ID
+team_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+## Failure Flags Service Labels - Add labels to identify unique deployments.
+## Override these using environment variables prefixed with GREMLIN_LABEL_
+labels:
+    project: failure-flags-examples
+    example: kubernetes-ff-by-proxy
+
+## Debug, set to true for enhanced debug logging to STDOUT
+## Uncomment to enable debugging
+## Override with GREMLIN_DEBUG=true
+debug: true
+
+##############################################
+## Team Certificate - Use One of the Following
+##############################################
+
+## Gremlin Team Certificate - Paste certificate content here.
+## Override this with GREMLIN_TEAM_CERTIFICATE
+team_certificate: |
+  -----BEGIN CERTIFICATE-----
+  ExampleXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXX
+  -----END CERTIFICATE-----
+
+## Gremlin Team Certificate File Path
+## Override this with GREMLIN_TEAM_CERTIFICATE_FILE
+# team_certificate_file: "/opt/secrets/gremlin/team-certificate.pem
+
+## Gremlin Team Certificate ARN
+## Supports ssm and secretsmanager ARNs
+## Override this with GREMLIN_TEAM_CERTIFICATE_ARN
+# team_certificate_arn: ""
+
+##############################################
+## Team Private Key - Use One of the Following
+##############################################
+
+## Gremlin Team Private Key - Paste certificate content here.
+## Override this with GREMLIN_TEAM_PRIVATE_KEY
+team_private_key: |
+  -----BEGIN EC PRIVATE KEY-----
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  -----END EC PRIVATE KEY-----
+
+## Gremlin Team Private Key File Path
+## Override this with GREMLIN_TEAM_PRIVATE_KEY_FILE
+# team_private_key_file: "/opt/secrets/gremlin/team-privatekey.pem"
+
+## Gremlin Team Private Key ARN
+## Supports ssm and secretsmanager ARNs
+## Override this with GREMLIN_TEAM_PRIVATE_KEY_ARN
+# team_private_key_file: "/opt/secrets/gremlin/team-privatekey.pem"
+
+##############################################
+## Corporate Proxy Configuration
+##############################################
+
+## HTTPS Proxy, set this when routing outbound Gremlin HTTPS traffic through a proxy
+## Override this with HTTPS_PROXY
+#https_proxy: https://corp.proxy.internal:3128
+
+## Custom CA Certificate, set this when using a https proxy with a self-signed certificate.
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE
+## Paste certificate content here.
+#ssl_cert: |
+#    -----BEGIN CERTIFICATE-----
+#    ExampleXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXX
+#    -----END CERTIFICATE-----
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_FILE
+#ca_cert_file: "/api/secrets/custom-certificate.crt"
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_FILE
+#ca_cert_arn: "arn:aws:secretsmanager:<region>:<aws_account_id>:secret:<secret-name>"
+
+## CA Certificate Bundles
+## If you have pre-build certificate bundles you need to use you can provide them
+## via file or ARN. TLS configuration provided via bundle will override the
+## ssl_cert parameter. Only ssm and secretsmanager ARNs are supported.
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_BUNDLE_FILE
+# ssl_trust_cert_bundle_file: "/opt/secrets/custom-certificates.crt'
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_BUNDLE_ARN
+# ssl_trust_cert_bundle_arn: "arn:aws:secretsmanager:<region>:<aws_account_id>:secret:<secret-name>"
+
+##############################################
+## Enabling Failure Flags by Proxy (modes)
+##############################################
+
+## This enables the HTTP CONNECT proxy for automatically intercepting outbound
+## HTTP requests to your service dependencies. Override this value with
+## GREMLIN_HTTP_CONNECT_PROXY_ENABLED and set it to true, yes, or 1
+## This defaults to false.
+http_connect_proxy_enabled: true
+
+## This sets the bind address of the HTTP CONNECT proxy. The proxy will only
+## bind on localhost and this value must specify localhost (or 127.0.0.1 or ::1)
+## and the port. Override this value with GREMLIN_HTTP_CONNECT_PROXY_ENABLED.
+## This defaults to localhost:5034
+http_connect_proxy_port: localhost:5034
+
+##############################################
+## Enabling Failure Flags by Reverse Proxy
+##############################################
+
+reverse_proxy_enabled: true
+reverse_proxy_port: :9081
+reverse_proxied_endpoint: http://localhost:9080
+
+##############################################
+## Timing, Ports, and Other Configuration
+##############################################
+
+## Refresh Interval controls how offten the sidecar reaches
+## out to the control plane. This also controls how long
+## experiments remain in local cache. A shorter interval means
+## more responsive experiment pickup and halting, but much
+## more outbound traffic and resource usage. The default for
+## this setting is 30s. This value is a Go duration format
+## (e.g. 30s, 1m, 1m30s).
+## Override this with GREMLIN_REFRESH_INTERVAL
+# refresh_interval: 30s
+
+## Request Timeout controls how long this sidecar will wait during requests
+## to external services. This is important to tune because this program
+## will not serve experiments until it is able to reach a control plane and
+## retrieve the current set. If it is unable to reach a control plane before
+## the timeout, then no experiments will be active until the next time it is
+## able to reach a control plane. However, in some cases the service itself
+## may not become healthy or yield to the Application until the first
+## successful registration (this is a Lambda cold start problem).
+## Override this with GREMLIN_REQUEST_TIMEOUT
+# request_timeout: 500ms
+
+## API ENDPOINT, set this to the Gremlin API endpoint you want to interact with.
+## The default and GA endpoint is at https://api.gremlin.com/v1/ff. You may need
+## to set this if you're using Gremlin Private Edition or working with custom
+## endpoints (something like Private Link).
+## Override this with GREMLIN_API_ENDPOINT_URL
+#api_endpoint_url: https://api.gremlin.com/v1/ff
+```
