@@ -27,6 +27,88 @@
 ##################################################################################################
 
 ##################################################################################################
+# Internal Proxy
+##################################################################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: existing-proxy-config
+data:
+  default.conf: |
+    server {
+        listen 8888;
+        access_log /dev/stdout;
+        error_log /dev/stdout;
+
+        ## forward proxy for CONNECT request
+        #proxy_connect;
+        #proxy_connect_allow            443;
+        #proxy_connect_connect_timeout  10s;
+        #proxy_connect_read_timeout     10s;
+        #proxy_connect_send_timeout     10s;
+
+        location / {
+            resolver 8.8.8.8;
+            proxy_pass http://$http_host$uri$is_args$args;
+        }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-proxy 
+  labels:
+    app: internal-proxy
+    service: internal-proxy
+spec:
+  ports:
+  - port: 8888
+    targetPort: 8888
+    name: http
+  selector:
+    app: internal-proxy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bookinfo-internal-proxy
+  labels:
+    account: internal-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-proxy
+  labels:
+    app: internal-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internal-proxy
+  template:
+    metadata:
+      labels:
+        app: internal-proxy
+    spec:
+      serviceAccountName: bookinfo-internal-proxy
+      volumes:
+      - name: proxy-config
+        configMap:
+          name: existing-proxy-config
+      containers:
+      - name: nginx
+        image: docker.io/nginx:latest
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: proxy-config
+          readOnly: true
+          mountPath: "/etc/nginx/conf.d/"
+        ports:
+        - containerPort: 8888
+---
+##################################################################################################
 # Details service
 ##################################################################################################
 apiVersion: v1
@@ -94,9 +176,14 @@ spec:
             value: "details-v1"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: HTTP_PROXY
+            value: http://internal-proxy:8888
       - name: details
         image: docker.io/istio/examples-bookinfo-details-v1:1.20.3
         imagePullPolicy: IfNotPresent
+        env:
+          - name: HTTP_PROXY
+            value: http://localhost:5034/
         ports:
         - containerPort: 9080
 ---
@@ -168,11 +255,16 @@ spec:
             value: "ratings"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: HTTP_PROXY
+            value: http://internal-proxy:8888
       - name: ratings
         image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
+        env:
+          - name: HTTP_PROXY
+            value: http://localhost:5034/
 ---
 ##################################################################################################
 # Reviews service
@@ -246,10 +338,14 @@ spec:
             value: "reviews-v1"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: HTTP_PROXY
+            value: http://internal-proxy:8888
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
         imagePullPolicy: IfNotPresent
         env:
+        - name: HTTP_PROXY
+          value: http://localhost:5034/
         - name: LOG_DIR
           value: "/tmp/logs"
         ports:
@@ -307,10 +403,14 @@ spec:
             value: "reviews-v2"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: HTTP_PROXY
+            value: http://internal-proxy:8888
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v2:1.20.3
         imagePullPolicy: IfNotPresent
         env:
+        - name: HTTP_PROXY
+          value: http://localhost:5034/
         - name: LOG_DIR
           value: "/tmp/logs"
         ports:
@@ -354,6 +454,8 @@ spec:
         image: docker.io/istio/examples-bookinfo-reviews-v3:1.20.3
         imagePullPolicy: IfNotPresent
         env:
+        - name: HTTP_PROXY
+          value: http://localhost:5034/
         - name: LOG_DIR
           value: "/tmp/logs"
         ports:
@@ -381,6 +483,8 @@ spec:
             value: "reviews-v3"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: HTTP_PROXY
+            value: http://internal-proxy:8888
 ---
 ##################################################################################################
 # Productpage services
@@ -446,6 +550,9 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /tmp
+        env:
+        - name: HTTP_PROXY
+          value: http://localhost:5034/
       - name: gremlin
         image: docker.io/gremlin/failure-flags-sidecar:latest
         imagePullPolicy: IfNotPresent
