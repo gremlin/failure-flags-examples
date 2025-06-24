@@ -11,7 +11,7 @@ module.exports.handler = async (event) => {
 
   // Note: This is an example of a line you need to add to 
   // your application code for each failure flag.
-  await gremlin.ifExperimentActive({
+  await gremlin.invokeFailureFlag({
     name: 'http-ingress', // name of the failure flag.
     labels: { 
       method: event.requestContext.http.method, 
