@@ -1,0 +1,61 @@
+# For local-testing, place a copy of layer-gremlin-lambda-arm64.zip in the ../local folder.
+# The function can also use a published layer via a specified arm (ex. arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:14)
+# To create the stack, navigate to the lambda-api-proxy folder and run 'sls deploy --stage <desired stage name>'
+# To delete the stack when you are done, navigate to the lambda-api-proxy folder and run 'sls delete --stage <desired stage name>'
+service: lambda-api-proxy-example
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  stage: ${file(../serverless.yml):custom.stage}
+  region: ${file(../serverless.yml):custom.region}
+  deploymentPrefix: ${file(../serverless.yml):custom.prefix}
+
+package:
+  individually: true
+  patterns:
+    - '!**'
+    - '!secrets'
+
+layers:
+  gremlinLambdaArm:
+    name: ${self:provider.stage}-gremlin-lambda-arm64
+    package: 
+      artifact: ../local/layer-gremlin-lambda-arm64.zip
+    retain: false
+    compatibleArchitectures:
+     - arm64
+    description: >
+      This lambda layer contains the arm64 variant of the Gremlin Lambda
+      Extension. This extension connects your Lambda functions to the 
+      Gremlin control plane APIs and enables your application level 
+      reliability tests.
+
+functions:
+  proxy:
+    package:
+      patterns:
+      - '../node/**'
+    handler: node/index.handler
+    runtime: nodejs22.x
+    architecture: arm64
+    memorySize: 256
+    environment:
+      FAILURE_FLAGS_ENABLED: true
+      GREMLIN_TEAM_ID: ${file(../secrets/${file(../serverless.yml):custom.credentialsFile}):team_id}
+      GREMLIN_TEAM_CERTIFICATE: ${file(../secrets/${file(../serverless.yml):custom.credentialsFile}):team_certificate}
+      GREMLIN_TEAM_PRIVATE_KEY: ${file(../secrets/${file(../serverless.yml):custom.credentialsFile}):team_private_key}
+      GREMLIN_LAMBDA_ENABLED: true
+      GREMLIN_DEBUG: true
+      GREMLIN_API_ENDPOINT_URL: ${file(../serverless.yml):custom.endpoint}/ff
+      GREMLIN_REFRESH_INTERVAL_MS: 15000 # refresh
+      #GREMLIN_REQUEST_TIMEOUT: 2000ms # required for staging environment
+      GREMLIN_LAMBDA_API_PROXY_ENABLED: true
+      GREMLIN_LAMBDA_API_PROXY_PORT: localhost:6033
+      AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+    layers:
+      - !Ref GremlinLambdaArmLambdaLayer
+    events:
+      - httpApi:
+          path: /lambda-proxy-demo
+          method: '*'
