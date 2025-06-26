@@ -29,30 +29,6 @@
 ##################################################################################################
 # Internal Proxy
 ##################################################################################################
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: existing-proxy-config
-data:
-  default.conf: |
-    server {
-        listen 8888;
-        access_log /dev/stdout;
-        error_log /dev/stdout;
-
-        ## forward proxy for CONNECT request
-        #proxy_connect;
-        #proxy_connect_allow            443;
-        #proxy_connect_connect_timeout  10s;
-        #proxy_connect_read_timeout     10s;
-        #proxy_connect_send_timeout     10s;
-
-        location / {
-            resolver 8.8.8.8;
-            proxy_pass http://$http_host$uri$is_args$args;
-        }
-    }
 ---
 apiVersion: v1
 kind: Service
@@ -93,20 +69,13 @@ spec:
         app: internal-proxy
     spec:
       serviceAccountName: bookinfo-internal-proxy
-      volumes:
-      - name: proxy-config
-        configMap:
-          name: existing-proxy-config
       containers:
-      - name: nginx
-        image: docker.io/nginx:latest
+      - name: tinyproxy
+        image: docker.io/monokal/tinyproxy:latest
         imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - name: proxy-config
-          readOnly: true
-          mountPath: "/etc/nginx/conf.d/"
         ports:
         - containerPort: 8888
+        args: ["ANY"]
 ---
 ##################################################################################################
 # Details service
@@ -556,6 +525,13 @@ spec:
       - name: gremlin
         image: docker.io/gremlin/failure-flags-sidecar:latest
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "250m"
+          limits:
+            memory: "32Mi"
+            cpu: "500m"
         ports:
         - containerPort: 9081
         volumeMounts:
@@ -571,4 +547,8 @@ spec:
             value: "productpage"
           - name: GREMLIN_DEBUG
             value: "true"
+          - name: GREMLIN_TRACE
+            value: "true"
+          - name: "HTTP_PROXY"
+            value: "http://internal-proxy:8888"
 ---
