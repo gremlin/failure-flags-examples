@@ -13,6 +13,11 @@ labels:
 ## Override with GREMLIN_DEBUG=true
 debug: true
 
+## Trace, set to true for enhanced network tracing to STDOUT
+## Uncomment to enable network tracing
+## Override with GREMLIN_TRACE=true
+trace: false
+
 ##############################################
 ## Team Certificate - Use One of the Following
 ##############################################
