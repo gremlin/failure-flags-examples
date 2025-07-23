@@ -115,54 +115,78 @@ team_private_key: |
 ## Enabling Failure Flags by Proxy (modes)
 ##############################################
 
+## AWS Lambda API Proxy Mode
+## -------------------------------------------
+
+## Enables a special proxy for the AWS Lambda Runtime API. This proxy allows
+## for simple experimentation on AWS Lambda functions withouut code changes.
+## Override with GREMLIN_LAMBDA_PROXY_ENABLED. Value must be `true` or `1`.
+#lambda_proxy_enabled: true
+
+## This port must match the AWS_LAMBDA_RUNTIME_API value set in your function.
+## Make sure to use the included boostratp script. Defaults to localhost:5033.
+## Override with GREMLIN_LAMBDA_PROXY_PORT.
+#lambda_proxy_port: localhost:5033
+
+## Dependency Proxy Mode
+## -------------------------------------------
+## This is an HTTP and HTTPS proxy for intercepting calls to your service 
+## dependencies. To use this, enable the below and then set the HTTP_PROXY and 
+## HTTPS_PROXY environment variables in your service to match the connect proxy
+## port setting below.
+
 ## This enables the HTTP CONNECT proxy for automatically intercepting outbound 
 ## HTTP requests to your service dependencies. Override this value with
-## GREMLIN_HTTP_CONNECT_PROXY_ENABLED and set it to true, yes, or 1
+## GREMLIN_DEPENDENCY_PROXY_ENABLED and set it to true, yes, or 1
 ## This defaults to false.
-http_connect_proxy_enabled: true
+dependency_proxy_enabled: true
 
 ## This sets the bind address of the HTTP CONNECT proxy. The proxy will only
 ## bind on localhost and this value must specify localhost (or 127.0.0.1 or ::1)
-## and the port. Override this value with GREMLIN_HTTP_CONNECT_PROXY_ENABLED.
-## This defaults to localhost:5034
-http_connect_proxy_port: localhost:5034
+## and the port. This defaults to localhost:5034.
+## Override this value with GREMLIN_DEPENDENCY_PROXY_ENABLED.
+dependency_proxy_port: localhost:5034
 
-##############################################
-## Enabling Failure Flags by Reverse Proxy
-##############################################
+## Ingress Proxy Mode
+## -------------------------------------------
+## This mode routes inbound traffic to your service.
 
-reverse_proxy_enabled: true
-reverse_proxy_port: :9081
-reverse_proxied_endpoint: http://localhost:9080
+## Uncomment this property to enable the reverse proxy and begin experimenting
+## on inbound requests and responses to those requests without any additinoal
+## changes to your application code. Enabling this requires that the next two 
+## properties are specified. 
+## Override this value with GREMLIN_INGRESS_PROXY_ENABLED=true
+ingress_proxy_enabled: true
 
-##############################################
-## Timing, Ports, and Other Configuration
-##############################################
+## This sets the host:port where this reverse proxy should bind. This must match
+## the destination where your existing loadbalancer or callers expect the service
+## to be running. This value defaults to :5033
+## Override this value with GREMLIN_INGRESS_PROXY_PORT=:9081
+ingress_proxy_port: :9081
 
-## Refresh Interval controls how offten the sidecar reaches
-## out to the control plane. This also controls how long
-## experiments remain in local cache. A shorter interval means
-## more responsive experiment pickup and halting, but much
-## more outbound traffic and resource usage. The default for
-## this setting is 30s. This value is a Go duration format
-## (e.g. 30s, 1m, 1m30s).
-## Override this with GREMLIN_REFRESH_INTERVAL
-# refresh_interval: 30s
+## If the reverse proxy is enabled this property must be explicitly set to the
+## local endpoint URL of the upstream service. This URL should be on localhost
+## to avoid making additional network hops. This value has no default.
+## Override this value with GREMLIN_INGRESS_PROXIED_ENDPOINT
+ingress_proxied_endpoint: http://localhost:9080
 
-## Request Timeout controls how long this sidecar will wait during requests
-## to external services. This is important to tune because this program
-## will not serve experiments until it is able to reach a control plane and
-## retrieve the current set. If it is unable to reach a control plane before
-## the timeout, then no experiments will be active until the next time it is
-## able to reach a control plane. However, in some cases the service itself 
-## may not become healthy or yield to the Application until the first
-## successful registration (this is a Lambda cold start problem).
-## Override this with GREMLIN_REQUEST_TIMEOUT
-# request_timeout: 500ms
+## Common Proxy Settings
+## -------------------------------------------
 
-## API ENDPOINT, set this to the Gremlin API endpoint you want to interact with.
-## The default and GA endpoint is at https://api.gremlin.com/v1/ff. You may need
-## to set this if you're using Gremlin Private Edition or working with custom
-## endpoints (something like Private Link).
-## Override this with GREMLIN_API_ENDPOINT_URL
-#api_endpoint_url: https://api.gremlin.com/v1/ff
+## Uncomment this property to set a custom timeout for idle connections.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_IDLE_TIMEOUT.
+#proxy_idle_connection_timeout: "1m"
+
+## Uncomment this property to set a custom read timeout.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_READ_TIMEOUT.
+#proxy_read_timeout: "1m"
+
+## Uncomment this property to set a custom write timeout.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_WRITE_TIMEOUT.
+#proxy_write_timeout: "1m"
