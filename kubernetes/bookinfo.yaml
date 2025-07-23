@@ -128,7 +128,7 @@ spec:
           secretName: example-gremlin-secret
       containers:
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9081
@@ -207,7 +207,7 @@ spec:
           secretName: example-gremlin-secret
       containers:
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9081
@@ -290,7 +290,7 @@ spec:
         emptyDir: {}
       containers:
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9081
@@ -355,7 +355,7 @@ spec:
           secretName: example-gremlin-secret
       containers:
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9081
@@ -435,7 +435,7 @@ spec:
         - name: wlp-output
           mountPath: /opt/ibm/wlp/output
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9081
@@ -523,7 +523,7 @@ spec:
         - name: HTTP_PROXY
           value: http://localhost:5034/
       - name: gremlin
-        image: docker.io/gremlin/failure-flags-sidecar:latest
+        image: docker.io/gremlin/failure-flags-sidecar:v2
         imagePullPolicy: IfNotPresent
         resources:
           requests:
@@ -548,7 +548,9 @@ spec:
           - name: GREMLIN_DEBUG
             value: "true"
           - name: GREMLIN_TRACE
-            value: "true"
+            value: "false"
+          - name: GREMLIN_REFRESH_INTERVAL
+            value: "1m"
           - name: "HTTP_PROXY"
             value: "http://internal-proxy:8888"
 ---
