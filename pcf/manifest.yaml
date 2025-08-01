@@ -1,0 +1,28 @@
+---
+applications:
+  - name: myapp                           # App name in CF
+    memory: 1G                            # Memory for the container
+    disk_quota: 1G                        # Disk space for the container
+    instances: 1                          # Number of instances
+    health-check-type: none               # Disable health checks
+
+    buildpacks:
+      - go_buildpack
+
+    path: .                               # Push contents of current directory
+
+    command: ./myapp                      # App that repeatedly loads www.example.com
+
+    env:
+      SERVICE_NAME: "myapp"
+      GREMLIN_DEBUG: "true"               # Enable debug logging
+      GREMLIN_SIDECAR_ENABLED: "true"
+      GREMLIN_CONFIG_FILE: "config.yaml"  # Path to Gremlin config file
+      HTTP_PROXY: "http://localhost:5034" # Needed for detecting dependency failure flags (should match "dependency_proxy_port" in config.yaml)
+
+    sidecars:
+      - name: gremlin-sidecar
+        process_types: ["web"]            # Attach sidecar to 'web' process
+        memory: 256M
+        disk_quota: 256M
+        command: "./bin/failure-flags-sidecar-amd64-linux"  # Run Gremlin sidecar
