@@ -108,11 +108,12 @@ aws lambda update-function-configuration \
     "GREMLIN_LAMBDA_ENABLED": "true",
     "GREMLIN_CONFIG_ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:gremlin-config-abc123",
     "HTTP_PROXY": "http://localhost:5034",
-    "HTTPS_PROXY": "http://localhost:5034"
+    "HTTPS_PROXY": "http://localhost:5034",
+    "AWS_LAMBDA_EXEC_WRAPPER": /"opt/bootstrap"
   }'
 ```
 
-Replace the `GREMLIN_CONFIG_ARN` value with the actual ARN returned from step 3. This layer also brings in a bootstrap script that sets an environment variable inside your function. That variable `AWS_LAMBDA_RUNTIME_API` must be set to the port where the lambda proxy is running on localhost. If you do not use the included bootstrap script then you must set that environment variable by some other means.
+Replace the `GREMLIN_CONFIG_ARN` value with the actual ARN returned from step 3. This layer also brings in a bootstrap script. You must set `AWS_LAMBDA_EXEC_WRAPPER` to `/opt/bootstrap` in order to adopt that script. The script sets another environment variable inside your function. That variable `AWS_LAMBDA_RUNTIME_API` must be set to the port where the lambda proxy is running on localhost. If you do not use the included bootstrap script then you must set that environment variable by some other means.
 
 ## 6. Result: Automatically Created Failure Flags
 
