@@ -59,7 +59,7 @@ dependency_proxy_enabled: true
 dependency_proxy_port: localhost:5034
 
 lambda_proxy_enabled: true
-lambda_proxy_port: :5032
+lambda_proxy_port: :5033
 ```
 
 Replace the team_id, team_certificate, and team_private_key with your actual Gremlin credentials from https://app.gremlin.com/settings/teams.
