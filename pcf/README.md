@@ -11,15 +11,15 @@ Follow these steps to run a sample application that loads its dependency www.exa
 
 arm64:
 ```
-$ wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/arm64/failure-flags-sidecar-linux.tar.gz
-$ tar -xzf failure-flags-sidecar-linux.tar.gz
-$ rm failure-flags-sidecar-linux.tar.gz
+wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/arm64/failure-flags-sidecar-linux.tar.gz
+tar -xzf failure-flags-sidecar-linux.tar.gz
+rm failure-flags-sidecar-linux.tar.gz
 ```
 amd64:
 ```
-$ wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/x86_64/failure-flags-sidecar-linux.tar.gz
-$ tar -xzf failure-flags-sidecar-linux.tar.gz
-$ rm failure-flags-sidecar-linux.tar.gz
+wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/x86_64/failure-flags-sidecar-linux.tar.gz
+tar -xzf failure-flags-sidecar-linux.tar.gz
+rm failure-flags-sidecar-linux.tar.gz
 ```
 
 ## Update the Gremlin configuration file
@@ -60,13 +60,13 @@ Click `Save and Run`
 
 Before the experiment, www.example.com takes ~5ms to load
 ```bash
-$ cf logs myapp --recent
+cf logs myapp --recent
    2025-08-01T09:57:05.84-0600 [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 5.393351ms
 ```
 
 During the experiment, www.example.com takes 2s to load
 ```bash
-$ cf logs myapp --recent
+cf logs myapp --recent
   2025-08-01T09:53:41.11-0600 [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 2.006431396s
 ```
 
