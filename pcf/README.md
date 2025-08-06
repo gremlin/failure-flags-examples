@@ -9,17 +9,30 @@ Follow these steps to run a sample application that loads its dependency www.exa
 
 ## Download the failure flags sidecar
 
+amd64:
+```
+wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/x86_64/failure-flags-sidecar-linux.tar.gz
+tar -xzf failure-flags-sidecar-linux.tar.gz
+rm failure-flags-sidecar-linux.tar.gz
+```
+
 arm64:
 ```
 wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/arm64/failure-flags-sidecar-linux.tar.gz
 tar -xzf failure-flags-sidecar-linux.tar.gz
 rm failure-flags-sidecar-linux.tar.gz
 ```
+
+## Build myapp
+
 amd64:
 ```
-wget https://assets.gremlin.com/packages/failure-flags-sidecar/latest/x86_64/failure-flags-sidecar-linux.tar.gz
-tar -xzf failure-flags-sidecar-linux.tar.gz
-rm failure-flags-sidecar-linux.tar.gz
+GOOS=linux GOARCH=amd64 go build -o myapp
+```
+
+arm64:
+```
+GOOS=linux GOARCH=arm64 go build -o myapp
 ```
 
 ## Update the Gremlin configuration file
