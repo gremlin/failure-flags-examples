@@ -23,7 +23,7 @@ tar -xzf failure-flags-sidecar-linux.tar.gz
 rm failure-flags-sidecar-linux.tar.gz
 ```
 
-## Build myapp
+## Build the sample application (myapp)
 
 amd64:
 ```
