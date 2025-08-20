@@ -109,7 +109,7 @@ aws lambda update-function-configuration \
     "GREMLIN_CONFIG_ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:gremlin-config-abc123",
     "HTTP_PROXY": "http://localhost:5034",
     "HTTPS_PROXY": "http://localhost:5034",
-    "AWS_LAMBDA_EXEC_WRAPPER": /"opt/bootstrap"
+    "AWS_LAMBDA_EXEC_WRAPPER": "/opt/bootstrap"
   }'
 ```
 
