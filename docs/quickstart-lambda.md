@@ -20,23 +20,23 @@ Select the appropriate layer ARN for your region and architecture from the table
 
 | Region | x86_64 | Arm64 |
 | ------ | ------ | ----- |
-| ap-northeast-3 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ap-northeast-2 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ap-northeast-1 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ap-south-1 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ap-southeast-1 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ap-southeast-2 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| ca-central-1 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| eu-north-1 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| eu-west-3 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| eu-west-2 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| eu-west-1 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| eu-central-1 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| sa-east-1 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| us-east-1 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| us-west-1 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
-| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:2 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:2 |
+| ap-northeast-3 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-northeast-2 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-northeast-1 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-south-1 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-southeast-1 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-southeast-2 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ca-central-1 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| eu-north-1 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| eu-west-3 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| eu-west-2 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| eu-west-1 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| eu-central-1 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| sa-east-1 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-east-1 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-west-1 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
 
 ## 2. Create the Sidecar Config File
 
