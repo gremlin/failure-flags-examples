@@ -34,9 +34,9 @@ Select the appropriate layer ARN for your region and architecture from the table
 | eu-central-1 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
 | sa-east-1 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
 | us-east-1 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
 | us-west-1 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
 
 ## 2. Create the Sidecar Config File
 
