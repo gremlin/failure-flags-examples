@@ -103,7 +103,7 @@ Add the layer to your Lambda function and configure environment variables (examp
 ```bash
 aws lambda update-function-configuration \
   --function-name your-function-name \
-  --layers arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:2 \
+  --layers arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 \
   --environment Variables='{
     "GREMLIN_LAMBDA_ENABLED": "true",
     "GREMLIN_CONFIG_ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:gremlin-config-abc123",
