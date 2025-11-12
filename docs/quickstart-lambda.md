@@ -20,23 +20,23 @@ Select the appropriate layer ARN for your region and architecture from the table
 
 | Region | x86_64 | Arm64 |
 | ------ | ------ | ----- |
-| ap-northeast-3 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ap-northeast-2 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ap-northeast-1 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ap-south-1 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ap-southeast-1 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ap-southeast-2 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| ca-central-1 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| eu-north-1 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| eu-west-3 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| eu-west-2 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| eu-west-1 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| eu-central-1 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| sa-east-1 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-east-1 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-west-1 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:4 |
-| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:4 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-arm64:4 |
+| ap-northeast-3 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-northeast-3:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ap-northeast-2 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-northeast-2:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ap-northeast-1 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-northeast-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ap-south-1 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-south-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ap-southeast-1 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-southeast-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ap-southeast-2 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ap-southeast-2:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| ca-central-1 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:ca-central-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| eu-north-1 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:eu-north-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| eu-west-3 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:eu-west-3:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| eu-west-2 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:eu-west-2:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| eu-west-1 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:eu-west-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| eu-central-1 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:eu-central-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| sa-east-1 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:sa-east-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| us-east-1 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:us-east-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| us-east-2 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:us-east-2:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| us-west-1 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:us-west-1:044815399860:layer:gremlin-lambda-v2-arm64:5 |
+| us-west-2 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-x86_64:5 | arn:aws:lambda:us-west-2:044815399860:layer:gremlin-lambda-v2-arm64:5 |
 
 ## 2. Create the Sidecar Config File
 
@@ -114,6 +114,8 @@ aws lambda update-function-configuration \
 ```
 
 Replace the `GREMLIN_CONFIG_ARN` value with the actual ARN returned from step 3. This layer also brings in a bootstrap script. You must set `AWS_LAMBDA_EXEC_WRAPPER` to `/opt/bootstrap` in order to adopt that script. The script sets another environment variable inside your function. That variable `AWS_LAMBDA_RUNTIME_API` must be set to the port where the lambda proxy is running on localhost. If you do not use the included bootstrap script then you must set that environment variable by some other means.
+
+If you also use a corporate proxy you'll need to set an additional environment variable so that the extension will traverse that appropriately: `GREMLIN_HTTPS_PROXY=<your proxy host:port pair>`.
 
 ## 6. Result: Automatically Created Failure Flags
 
