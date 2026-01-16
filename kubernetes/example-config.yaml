@@ -5,8 +5,8 @@ team_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ## Failure Flags Service Labels - Add labels to identify unique deployments.
 ## Override these using environment variables prefixed with GREMLIN_LABEL_
 labels:
-    project: failure-flags-examples
-    example: failure-flags-by-proxy
+  project: failure-flags-examples
+  example: failure-flags-by-proxy
 
 ## Debug, set to true for enhanced debug logging to STDOUT
 ## Uncomment to enable debugging
@@ -101,7 +101,7 @@ team_private_key: |
 #ca_cert_arn: "arn:aws:secretsmanager:<region>:<aws_account_id>:secret:<secret-name>"
 
 ## CA Certificate Bundles
-## If you have pre-build certificate bundles you need to use you can provide them 
+## If you have pre-build certificate bundles you need to use you can provide them
 ## via file or ARN. TLS configuration provided via bundle will override the
 ## ssl_cert parameter. Only ssm and secretsmanager ARNs are supported.
 
@@ -130,12 +130,12 @@ team_private_key: |
 
 ## Dependency Proxy Mode
 ## -------------------------------------------
-## This is an HTTP and HTTPS proxy for intercepting calls to your service 
-## dependencies. To use this, enable the below and then set the HTTP_PROXY and 
+## This is an HTTP and HTTPS proxy for intercepting calls to your service
+## dependencies. To use this, enable the below and then set the HTTP_PROXY and
 ## HTTPS_PROXY environment variables in your service to match the connect proxy
 ## port setting below.
 
-## This enables the HTTP CONNECT proxy for automatically intercepting outbound 
+## This enables the HTTP CONNECT proxy for automatically intercepting outbound
 ## HTTP requests to your service dependencies. Override this value with
 ## GREMLIN_DEPENDENCY_PROXY_ENABLED and set it to true, yes, or 1
 ## This defaults to false.
@@ -153,8 +153,8 @@ dependency_proxy_port: localhost:5034
 
 ## Uncomment this property to enable the reverse proxy and begin experimenting
 ## on inbound requests and responses to those requests without any additinoal
-## changes to your application code. Enabling this requires that the next two 
-## properties are specified. 
+## changes to your application code. Enabling this requires that the next two
+## properties are specified.
 ## Override this value with GREMLIN_INGRESS_PROXY_ENABLED=true
 ingress_proxy_enabled: true
 
