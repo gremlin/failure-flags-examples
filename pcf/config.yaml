@@ -1,0 +1,192 @@
+## Gremlin Team Id - you can find this value at https://app.gremlin.com/settings/teams
+## Override this using GREMLIN_TEAM_ID
+team_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+## Failure Flags Service Labels - Add labels to identify unique deployments.
+## Override these using environment variables prefixed with GREMLIN_LABEL_
+labels:
+  project: failure-flags-examples
+  example: failure-flags-by-proxy
+
+## Debug, set to true for enhanced debug logging to STDOUT
+## Uncomment to enable debugging
+## Override with GREMLIN_DEBUG=true
+debug: true
+
+## Trace, set to true for enhanced network tracing to STDOUT
+## Uncomment to enable network tracing
+## Override with GREMLIN_TRACE=true
+trace: false
+
+##############################################
+## Team Certificate - Use One of the Following
+##############################################
+
+## Gremlin Team Certificate - Paste certificate content here.
+## Override this with GREMLIN_TEAM_CERTIFICATE
+team_certificate: |
+  -----BEGIN CERTIFICATE-----
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxx=
+  -----END CERTIFICATE-----
+
+## Gremlin Team Certificate File Path
+## Override this with GREMLIN_TEAM_CERTIFICATE_FILE
+# team_certificate_file: "/opt/secrets/gremlin/team-certificate.pem
+
+## Gremlin Team Certificate ARN
+## Supports ssm and secretsmanager ARNs
+## Override this with GREMLIN_TEAM_CERTIFICATE_ARN
+# team_certificate_arn: ""
+
+##############################################
+## Team Private Key - Use One of the Following
+##############################################
+
+## Gremlin Team Private Key - Paste certificate content here.
+## Override this with GREMLIN_TEAM_PRIVATE_KEY
+team_private_key: |
+  -----BEGIN EC PRIVATE KEY-----
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx==
+  -----END EC PRIVATE KEY-----
+
+## Gremlin Team Private Key File Path
+## Override this with GREMLIN_TEAM_PRIVATE_KEY_FILE
+# team_private_key_file: "/opt/secrets/gremlin/team-privatekey.pem"
+
+## Gremlin Team Private Key ARN
+## Supports ssm and secretsmanager ARNs
+## Override this with GREMLIN_TEAM_PRIVATE_KEY_ARN
+# team_private_key_file: "/opt/secrets/gremlin/team-privatekey.pem"
+
+##############################################
+## Corporate Proxy Configuration
+##############################################
+
+## HTTPS Proxy, set this when routing outbound Gremlin HTTPS traffic through a proxy
+## Override this with HTTPS_PROXY
+#https_proxy: https://corp.proxy.internal:3128
+
+## Custom CA Certificate, set this when using a https proxy with a self-signed certificate.
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE
+## Paste certificate content here.
+#ssl_cert: |
+#    -----BEGIN CERTIFICATE-----
+#    ExampleXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    XXXXXXXX
+#    -----END CERTIFICATE-----
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_FILE
+#ca_cert_file: "/api/secrets/custom-certificate.crt"
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_FILE
+#ca_cert_arn: "arn:aws:secretsmanager:<region>:<aws_account_id>:secret:<secret-name>"
+
+## CA Certificate Bundles
+## If you have pre-build certificate bundles you need to use you can provide them 
+## via file or ARN. TLS configuration provided via bundle will override the
+## ssl_cert parameter. Only ssm and secretsmanager ARNs are supported.
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_BUNDLE_FILE
+# ssl_trust_cert_bundle_file: "/opt/secrets/custom-certificates.crt'
+
+## Override this with GREMLIN_CUSTOM_ROOT_CERTIFICATE_BUNDLE_ARN
+# ssl_trust_cert_bundle_arn: "arn:aws:secretsmanager:<region>:<aws_account_id>:secret:<secret-name>"
+
+##############################################
+## Enabling Failure Flags by Proxy (modes)
+##############################################
+
+## AWS Lambda API Proxy Mode
+## -------------------------------------------
+
+## Enables a special proxy for the AWS Lambda Runtime API. This proxy allows
+## for simple experimentation on AWS Lambda functions withouut code changes.
+## Override with GREMLIN_LAMBDA_PROXY_ENABLED. Value must be `true` or `1`.
+#lambda_proxy_enabled: true
+
+## This port must match the AWS_LAMBDA_RUNTIME_API value set in your function.
+## Make sure to use the included boostratp script. Defaults to localhost:5033.
+## Override with GREMLIN_LAMBDA_PROXY_PORT.
+#lambda_proxy_port: localhost:5033
+
+## Dependency Proxy Mode
+## -------------------------------------------
+## This is an HTTP and HTTPS proxy for intercepting calls to your service 
+## dependencies. To use this, enable the below and then set the HTTP_PROXY and 
+## HTTPS_PROXY environment variables in your service to match the connect proxy
+## port setting below.
+
+## This enables the HTTP CONNECT proxy for automatically intercepting outbound 
+## HTTP requests to your service dependencies. Override this value with
+## GREMLIN_DEPENDENCY_PROXY_ENABLED and set it to true, yes, or 1
+## This defaults to false.
+dependency_proxy_enabled: true
+
+## This sets the bind address of the HTTP CONNECT proxy. The proxy will only
+## bind on localhost and this value must specify localhost (or 127.0.0.1 or ::1)
+## and the port. This defaults to localhost:5034.
+## Override this value with GREMLIN_DEPENDENCY_PROXY_ENABLED.
+dependency_proxy_port: localhost:5034
+
+## Ingress Proxy Mode
+## -------------------------------------------
+## This mode routes inbound traffic to your service.
+
+## Uncomment this property to enable the reverse proxy and begin experimenting
+## on inbound requests and responses to those requests without any additional
+## changes to your application code. Enabling this requires that the next two 
+## properties are specified. 
+## Override this value with GREMLIN_INGRESS_PROXY_ENABLED=true
+ingress_proxy_enabled: true
+
+## This sets the host:port where this reverse proxy should bind. This must match
+## the destination where your existing loadbalancer or callers expect the service
+## to be running. This value defaults to :5033
+## Override this value with GREMLIN_INGRESS_PROXY_PORT=:9081
+ingress_proxy_port: :9081
+
+## If the reverse proxy is enabled this property must be explicitly set to the
+## local endpoint URL of the upstream service. This URL should be on localhost
+## to avoid making additional network hops. This value has no default.
+## Override this value with GREMLIN_INGRESS_PROXIED_ENDPOINT
+ingress_proxied_endpoint: http://localhost:9080
+
+## Common Proxy Settings
+## -------------------------------------------
+
+## Uncomment this property to set a custom timeout for idle connections.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_IDLE_TIMEOUT.
+#proxy_idle_connection_timeout: "1m"
+
+## Uncomment this property to set a custom read timeout.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_READ_TIMEOUT.
+#proxy_read_timeout: "1m"
+
+## Uncomment this property to set a custom write timeout.
+## This value is specified using Go duration formats, e.g. 1m, 60s.
+## The default value is 2m.
+## Override this value with GREMLIN_PROXY_WRITE_TIMEOUT.
+#proxy_write_timeout: "1m"
