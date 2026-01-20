@@ -397,7 +397,7 @@ When facing issues, run through this checklist:
 - [ ] **Valid credentials** (team ID, certificate, private key)
 - [ ] **Configuration file accessible** (path/ARN correct, permissions granted)
 - [ ] **Network connectivity** to `api.gremlin.com`
-- [ ] **Proxy environment variables set** in application (`HTTP_PROXY`, `HTTPS_PROXY`)
+- [ ] **Proxy environment variables set** in application (`GREMLIN_HTTP_PROXY`, `GREMLIN_HTTPS_PROXY`)
 - [ ] **Service name set explicitly** (Kubernetes only)
 - [ ] **Platform-specific setup complete** (load balancer, layer, IAM permissions)
 
