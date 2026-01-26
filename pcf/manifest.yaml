@@ -19,6 +19,7 @@ applications:
       GREMLIN_SIDECAR_ENABLED: "true"
       GREMLIN_CONFIG_FILE: "config.yaml"  # Path to Gremlin config file
       HTTP_PROXY: "http://localhost:5034" # Needed for detecting dependency failure flags (should match "dependency_proxy_port" in config.yaml)
+      #GREMLIN_HTTPS_PROXY: "https://my-proxy:443" # To connect to the gremlin control plane via a corporate proxy (alternatively, you can set 'https_proxy' in config.yaml)
 
     sidecars:
       - name: gremlin-sidecar
