@@ -65,6 +65,7 @@ Create a [Gremlin experiment](https://app.gremlin.com/failure-flags/new) with th
 - Service Selector: myapp
 - Effects: latency with 1000ms delay
 - Impact Probability: 100%
+- Experiment duration: 1m
 
 Click `Save and Run`
 
@@ -74,13 +75,53 @@ Click `Save and Run`
 Before the experiment, www.example.com takes ~5ms to load
 ```bash
 cf logs myapp --recent
-   2025-08-01T09:57:05.84-0600 [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 5.393351ms
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [30a6a1ce-ae06-4a5d-b158-edc5549e80a0] Processing outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [30a6a1ce-ae06-4a5d-b158-edc5549e80a0] Call result, code: 200
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [30a6a1ce-ae06-4a5d-b158-edc5549e80a0] Finished outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 5.089182ms
 ```
 
 During the experiment, www.example.com takes 2s to load
 ```bash
 cf logs myapp --recent
-  2025-08-01T09:53:41.11-0600 [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 2.006431396s
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [3a26b92b-3d45-4f78-b01e-4812d7e62cc9] Processing outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [3a26b92b-3d45-4f78-b01e-4812d7e62cc9] Adding 1s to the connection for dependency-www.example.com, before, experiment: 67629077-f021-47cd-a290-77f02197cddf
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [3a26b92b-3d45-4f78-b01e-4812d7e62cc9] Call result, code: 200
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [3a26b92b-3d45-4f78-b01e-4812d7e62cc9] Adding 1s to the connection for dependency-www.example.com, after, experiment: 67629077-f021-47cd-a290-77f02197cddf
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [3a26b92b-3d45-4f78-b01e-4812d7e62cc9] Finished outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 2.016184518s
+```
+
+## Inject an Exception with a Failure Flag
+
+Create a [Gremlin experiment](https://app.gremlin.com/failure-flags/new) with the following:
+- Experiment Name: my-exception-experiment
+- Failure Flag Selector: dependency-www.example.com
+- Service Selector: myapp
+- Effects: exception
+- Impact Probability: 100%
+- Experiment duration: 1m
+
+Click `Save and Run`
+
+## Verify the exception injection
+
+Before the experiment, your dependency returns a `200 OK`
+```bash
+cf logs myapp --recent
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [20ac4b65-9e7e-43b3-addd-9a62cb502dc0] Processing outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [20ac4b65-9e7e-43b3-addd-9a62cb502dc0] Call result, code: 200
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [20ac4b65-9e7e-43b3-addd-9a62cb502dc0] Finished outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 200 OK | Duration: 97.207249ms
+```
+
+During the experiment, your dependency returns a `500 Internal Server Error`
+```bash
+cf logs myapp --recent
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [6872c310-31b7-4bb7-a8af-13a0d54fcf58] Processing outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [6872c310-31b7-4bb7-a8af-13a0d54fcf58] Responding with 500 for request to dependency-www.example.com, experiment: 6ee9fc3e-c38d-4fd1-a9fc-3ec38dafd156
+   [APP/PROC/WEB/SIDECAR/GREMLIN-SIDECAR/0] OUT [failure-flags-sidecar-amd64-linux] [http-dependency-proxy] [debug] [6872c310-31b7-4bb7-a8af-13a0d54fcf58] Finished outbound request for URL: http://www.example.com/
+   [APP/PROC/WEB/0] OUT Request to www.example.com - Status: 500 Internal Server Error | Duration: 2.543772ms
 ```
 
 ## Cleanup
