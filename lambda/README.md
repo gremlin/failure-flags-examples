@@ -29,6 +29,18 @@ All functions run on Node.js 24 (arm64).
 
 ## Deploying
 
+### Gremlin Configuration
+
+Before deploying with the Gremlin layer, copy the configuration template into the `secrets` folder and fill in your team credentials:
+
+```sh
+cp configuration-template.yaml secrets/configuration.yaml
+```
+
+Then edit `secrets/configuration.yaml` and replace the placeholder values for `team_id`, `team_certificate`, and `team_private_key` with the real values for your team. You can download these from your team settings page at https://app.gremlin.com/settings/teams.
+
+### Running the Deploy
+
 ```sh
 make deploy
 ```
