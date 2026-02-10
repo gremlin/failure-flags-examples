@@ -130,3 +130,24 @@ To remove your application and sidecar, run:
 ```bash
 cf delete myapp
 ```
+
+## Troubleshooting
+ 
+```
+[STG/0] [ERR] Unable to interpolate credhub refs: Unable to interpolate credhub references: Post "https://credhub:8844/api/v1/interpolate": proxyconnect tcp: dial tcp 127.0.0.1:5034: connect: connection refused
+```
+
+If the staging steps fails to connect to a dependency (e.g., credhub), configure the `HTTP_PROXY`/`HTTPS_PROXY` environment variables for the runtime container (not globally), as follows:
+
+1. Create a file called `.profile` in the root directory of your application with this content:
+```
+   export HTTP_PROXY="http://localhost:5034"
+   export HTTPS_PROXY="http://localhost:5034"
+```
+
+2. Remove `HTTP_PROXY`/`HTTPS_PROXY` as global variables from the `env` block in the manifest file:
+```yaml
+   env:
+     # HTTP_PROXY: "http://localhost:5034"   # remove
+     # HTTPS_PROXY: "http://localhost:5034"  # remove
+```
