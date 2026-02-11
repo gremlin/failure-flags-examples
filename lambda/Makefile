@@ -6,6 +6,8 @@ LAYER_VERSION ?= 9
 LAYER_BASE    ?= arn:aws:lambda:$(REGION):044815399860:layer:gremlin-lambda-v2-$(ARCHITECTURE):$(LAYER_VERSION)
 ROLE_NAME     := ff-examples-execution-role
 API_NAME      := ff-examples-api
+SECRET_NAME   := $(PREFIX)-config
+LOG_GROUP     := /aws/apigateway/$(API_NAME)
 
 TRUST_POLICY := '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"lambda.amazonaws.com"},"Action":"sts:AssumeRole"}]}'
 INVOKE_POLICY := '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"lambda:InvokeFunction","Resource":"*"}]}'
@@ -86,8 +88,22 @@ cleanup:
 			--function-name $(PREFIX)-$$app \
 			--region $(REGION) 2>/dev/null && \
 			echo "  Deleted." || echo "  Not found, skipping."; \
-	done; \
-	echo "Removing IAM role $(ROLE_NAME)..."; \
+	done
+	@echo "Deleting CloudWatch log group $(LOG_GROUP)..."; \
+	aws logs delete-log-group \
+		--log-group-name $(LOG_GROUP) \
+		--region $(REGION) 2>/dev/null && \
+		echo "  Log group deleted." || echo "  Log group not found, skipping."
+	@echo "Deleting Secrets Manager secret $(SECRET_NAME)..."; \
+	aws secretsmanager delete-secret \
+		--secret-id $(SECRET_NAME) \
+		--force-delete-without-recovery \
+		--region $(REGION) 2>/dev/null && \
+		echo "  Secret deleted." || echo "  Secret not found, skipping."
+	@echo "Removing IAM role $(ROLE_NAME)..."; \
+	aws iam delete-role-policy \
+		--role-name $(ROLE_NAME) \
+		--policy-name secrets-access 2>/dev/null || true; \
 	aws iam delete-role-policy \
 		--role-name $(ROLE_NAME) \
 		--policy-name lambda-invoke 2>/dev/null || true; \
@@ -100,9 +116,11 @@ cleanup:
 	rm -f $(ZIPS)
 
 deploy: LAYERS_FLAG := --layers $(LAYER_BASE)
+deploy: GREMLIN_DEPLOY := true
 deploy: _deploy
 
 deploy-raw: LAYERS_FLAG :=
+deploy-raw: GREMLIN_DEPLOY :=
 deploy-raw: _deploy
 
 _deploy: package
@@ -128,6 +146,32 @@ _deploy: package
 	fi; \
 	ROLE_ARN=$$(aws iam get-role --role-name $(ROLE_NAME) --query 'Role.Arn' --output text); \
 	echo "Using role: $$ROLE_ARN"; \
+	echo "Creating/updating Secrets Manager secret $(SECRET_NAME)..."; \
+	if aws secretsmanager describe-secret --secret-id $(SECRET_NAME) --region $(REGION) > /dev/null 2>&1; then \
+		aws secretsmanager put-secret-value \
+			--secret-id $(SECRET_NAME) \
+			--secret-string file://secrets/configuration.yaml \
+			--region $(REGION) > /dev/null; \
+		echo "  Secret updated."; \
+	else \
+		aws secretsmanager create-secret \
+			--name $(SECRET_NAME) \
+			--secret-string file://secrets/configuration.yaml \
+			--region $(REGION) > /dev/null; \
+		echo "  Secret created."; \
+	fi; \
+	SECRET_ARN=$$(aws secretsmanager describe-secret \
+		--secret-id $(SECRET_NAME) \
+		--region $(REGION) \
+		--query 'ARN' --output text); \
+	echo "  Secret ARN: $$SECRET_ARN"; \
+	echo "  Granting role access to secret..."; \
+	aws iam put-role-policy \
+		--role-name $(ROLE_NAME) \
+		--policy-name secrets-access \
+		--policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"secretsmanager:GetSecretValue\",\"Resource\":\"$$SECRET_ARN\"}]}"; \
+	APP_ENV_FLAG="--environment Variables={GREMLIN_CONFIG_ARN=$$SECRET_ARN,GREMLIN_SIDECAR_ENABLED=true,AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap,HTTP_PROXY=http://localhost:5034}"; \
+	ROUTER_ENV="--environment Variables={SERVICE_A_FUNCTION=$(PREFIX)-serviceA,SERVICE_B_FUNCTION=$(PREFIX)-serviceB,SERVICE_C_FUNCTION=$(PREFIX)-serviceC,GREMLIN_CONFIG_ARN=$$SECRET_ARN,GREMLIN_SIDECAR_ENABLED=true,AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap,HTTP_PROXY=http://localhost:5034}"; \
 	for app in echo serviceA serviceB serviceC; do \
 		echo "Deploying $(PREFIX)-$$app..."; \
 		if aws lambda get-function --function-name $(PREFIX)-$$app --region $(REGION) > /dev/null 2>&1; then \
@@ -143,6 +187,7 @@ _deploy: package
 				--runtime $(RUNTIME) \
 				$(LAYERS_FLAG) \
 				--architectures $(ARCHITECTURE) \
+				$$APP_ENV_FLAG \
 				--region $(REGION) > /dev/null; \
 		else \
 			aws lambda create-function \
@@ -153,6 +198,7 @@ _deploy: package
 				--zip-file fileb://$$app.zip \
 				$(LAYERS_FLAG) \
 				--architectures $(ARCHITECTURE) \
+				$$APP_ENV_FLAG \
 				--region $(REGION) > /dev/null; \
 		fi; \
 		echo "  Done."; \
@@ -171,7 +217,7 @@ _deploy: package
 			--runtime $(RUNTIME) \
 			$(LAYERS_FLAG) \
 			--architectures $(ARCHITECTURE) \
-			--environment 'Variables={SERVICE_A_FUNCTION=$(PREFIX)-serviceA,SERVICE_B_FUNCTION=$(PREFIX)-serviceB,SERVICE_C_FUNCTION=$(PREFIX)-serviceC}' \
+			$$ROUTER_ENV \
 			--region $(REGION) > /dev/null; \
 	else \
 		aws lambda create-function \
@@ -182,7 +228,7 @@ _deploy: package
 			--zip-file fileb://router.zip \
 			$(LAYERS_FLAG) \
 			--architectures $(ARCHITECTURE) \
-			--environment 'Variables={SERVICE_A_FUNCTION=$(PREFIX)-serviceA,SERVICE_B_FUNCTION=$(PREFIX)-serviceB,SERVICE_C_FUNCTION=$(PREFIX)-serviceC}' \
+			$$ROUTER_ENV \
 			--region $(REGION) > /dev/null; \
 	fi; \
 	echo "  Done."; \
@@ -207,6 +253,17 @@ _deploy: package
 			--query 'ApiId' --output text); \
 		echo "  Created."; \
 	fi; \
+	echo "  Ensuring CloudWatch log group $(LOG_GROUP) exists..."; \
+	aws logs create-log-group \
+		--log-group-name $(LOG_GROUP) \
+		--region $(REGION) 2>/dev/null || true; \
+	LOG_GROUP_ARN="arn:aws:logs:$(REGION):$$ACCOUNT_ID:log-group:$(LOG_GROUP)"; \
+	echo "  Enabling access logging..."; \
+	aws apigatewayv2 update-stage \
+		--api-id $$API_ID \
+		--stage-name '$$default' \
+		--access-log-settings '{"DestinationArn":"'"$$LOG_GROUP_ARN"'","Format":"{\"requestId\":\"$$context.requestId\",\"ip\":\"$$context.identity.sourceIp\",\"requestTime\":\"$$context.requestTime\",\"httpMethod\":\"$$context.httpMethod\",\"routeKey\":\"$$context.routeKey\",\"status\":\"$$context.status\",\"protocol\":\"$$context.protocol\",\"responseLength\":\"$$context.responseLength\"}"}' \
+		--region $(REGION) > /dev/null; \
 	echo "  Ensuring invoke permission..."; \
 	aws lambda remove-permission \
 		--function-name $(PREFIX)-router \
