@@ -49,9 +49,10 @@ On first run this will:
 
 1. Build ZIP packages for each function
 2. Create an IAM execution role (`ff-examples-execution-role`) with permissions for CloudWatch Logs and Lambda invocation
-3. Create all five Lambda functions in `us-west-1`
-4. Create an HTTP API Gateway (`ff-examples-api`) wired to the router
-5. Print the live URL
+3. Create a Secrets Manager secret (`ff-examples-config`) from `secrets/configuration.yaml` and grant the execution role access to read it
+4. Create all five Lambda functions in `us-west-1` with `GREMLIN_CONFIG_ARN`, `GREMLIN_CONFIG_ARN_ROLE`, and `GREMLIN_SIDECAR_ENABLED` environment variables
+5. Create an HTTP API Gateway (`ff-examples-api`) wired to the router
+6. Print the live URL
 
 On subsequent runs it updates existing resources in place.
 
@@ -114,6 +115,7 @@ The deploy target creates and manages several AWS resources. If your IAM user or
 - **STS** -- `sts:GetCallerIdentity` (used to determine the account ID)
 - **IAM** -- `iam:CreateRole`, `iam:AttachRolePolicy`, `iam:PutRolePolicy`, `iam:GetRole`, `iam:DeleteRole`, `iam:DetachRolePolicy`, `iam:DeleteRolePolicy`
 - **Lambda** -- `lambda:CreateFunction`, `lambda:UpdateFunctionCode`, `lambda:UpdateFunctionConfiguration`, `lambda:GetFunction`, `lambda:DeleteFunction`, `lambda:AddPermission`, `lambda:RemovePermission`, `lambda:GetPolicy`
+- **Secrets Manager** -- `secretsmanager:CreateSecret`, `secretsmanager:PutSecretValue`, `secretsmanager:DescribeSecret`, `secretsmanager:DeleteSecret` (used to store the Gremlin configuration)
 - **API Gateway v2** -- `apigateway:POST`, `apigateway:GET`, `apigateway:DELETE` (or the broader `apigateway:*` on the relevant resources)
 - **CloudWatch Logs** -- the execution role needs `logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`, which are provided by the `AWSLambdaBasicExecutionRole` managed policy attached during deploy
 
@@ -125,4 +127,4 @@ If you encounter permission errors, ask your AWS administrator to grant the acti
 make cleanup
 ```
 
-This removes the API Gateway, all five Lambda functions, the IAM execution role and its policies, and the local ZIP artifacts.
+This removes the API Gateway, all five Lambda functions, the Secrets Manager secret, the IAM execution role and its policies, and the local ZIP artifacts.
