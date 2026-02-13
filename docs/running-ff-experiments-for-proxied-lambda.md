@@ -15,7 +15,8 @@ When you enable the Failure Flags Lambda Extension with proxy mode, it automatic
 | `ingress` | Triggers on Lambda invocation events | Test Lambda startup failures, invocation errors |
 | `http-ingress` | Triggers on HTTP-specific events (API Gateway, ALB) | Test HTTP parsing errors, malformed requests |
 | `response` | Triggers when Lambda returns responses | Test response corruption, timeout scenarios |
-| `dependency-<hostname>` | One flag per external service called | Test API failures, network timeouts, slow dependencies |
+| `egress` | Triggers when calls are made to any dependency | Test all dependencies API failures, network timeouts, slow dependencies |
+| `dependency-<hostname>` | One flag per external service called | Test single dependency API failures, network timeouts, slow dependencies |
 
 ### Example Scenario
 
@@ -28,6 +29,7 @@ The sidecar will automatically create:
 - `ingress` - Controls Lambda invocation behavior
 - `http-ingress` - Controls HTTP request processing  
 - `response` - Controls response behavior
+- `egress` - Controls all calls to HTTP(S) dependencies
 - `dependency-api.example.com` - Controls calls to api.example.com
 - `dependency-database.internal.com` - Controls calls to database.internal.com
 
@@ -55,7 +57,8 @@ The Failure Flags sidecar supports three main effect types that can be applied t
 - `ingress` - Delays Lambda invocation processing
 - `http-ingress` - Delays HTTP request parsing
 - `response` - Delays response transmission
-- `dependency-<hostname>` - Delays outbound requests
+- `egress` - Delays outbound request transmission to all dependencies
+- `dependency-<hostname>` - Delays outbound request transmission to a single dependency
 
 **Use Cases:**
 - Test timeout handling in clients
