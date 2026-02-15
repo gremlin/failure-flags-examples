@@ -46,9 +46,9 @@ The Failure Flags sidecar supports three main effect types that can be applied t
 **Configuration:**
 ```json
 {
-  "type": "latency",
-  "config": {
-    "delay_ms": 5000
+  "latency": {
+    "ms": 5000,
+    "jitter": 1000
   }
 }
 ```
@@ -73,24 +73,16 @@ The Failure Flags sidecar supports three main effect types that can be applied t
 **Configuration:**
 ```json
 {
-  "type": "exception",
-  "config": {
-    "exception_type": "ConnectionError",
-    "exception_message": "Database connection failed"
+  "exception": {
+    "message": "Database connection failed"
   }
 }
 ```
 
-**Common Exception Types:**
-- `RuntimeError` - General runtime failures
-- `ConnectionError` - Network connection issues  
-- `TimeoutError` - Request timeout scenarios
-- `MemoryError` - Memory exhaustion simulation
-- `ValueError` - Invalid data/parameter errors
-
 **Applicable Flags:**
 - `ingress` - Simulates Lambda initialization/runtime failures
 - `dependency-<hostname>` - Simulates external service failures
+- `egress` - Simulates external service failures
 
 **Use Cases:**
 - Test error handling and recovery
@@ -105,13 +97,9 @@ The Failure Flags sidecar supports three main effect types that can be applied t
 **Configuration:**
 ```json
 {
-  "type": "httpResponse",
-  "config": {
+  "httpResponse": {
     "code": 503,
-    "body": "Service temporarily unavailable",
-    "headers": {
-      "Retry-After": "60"
-    }
+    "body": "U2VydmljZSB0ZW1wb3JhcmlseSB1bmF2YWlsYWJsZQo=" // "Service temporarily unavailable" in base64
   }
 }
 ```
@@ -138,50 +126,22 @@ The Failure Flags sidecar supports three main effect types that can be applied t
 - Test authentication/authorization failure scenarios
 - Validate retry logic for specific error codes
 
-### Effect Combination Examples
+### Effect Combination Effect Statement Examples
 
 **Slow Dependency with Eventual Error:**
 ```json
 {
-  "type": "latency",
-  "config": {
-    "delay_ms": 2000
+  "latency": {
+    "ms": 2000
   }
 }
 ```
 Then follow with:
 ```json
 {
-  "type": "httpResponse", 
-  "config": {
+  "httpResponse": {
     "code": 504,
-    "body": "Gateway timeout after delay"
-  }
-}
-```
-
-**Realistic Database Failure:**
-```json
-{
-  "type": "exception",
-  "config": {
-    "exception_type": "ConnectionError",
-    "exception_message": "Connection pool exhausted"
-  }
-}
-```
-
-**API Rate Limiting Simulation:**
-```json
-{
-  "type": "httpResponse",
-  "config": {
-    "code": 429,
-    "body": "Rate limit exceeded",
-    "headers": {
-      "Retry-After": "60",
-      "X-RateLimit-Remaining": "0"
-    }
+    "body": "R2F0ZXdheSB0aW1lb3V0Cg==" // "Gateway timeout" in base64
   }
 }
 ```
@@ -255,14 +215,11 @@ Trigger the event source normally (upload file, send SQS message, etc.)
 - **Memory issues:** Test behavior when Lambda runs out of memory
 - **Timeout scenarios:** Test Lambda timeout handling
 
-**Example Experiment:**
+**Example Experiment Effect Statement:**
 ```json
 {
-  "name": "Lambda Cold Start Failure",
-  "type": "exception",
-  "config": {
-    "exception_type": "RuntimeError",
-    "exception_message": "Cold start initialization failed"
+  "exception": {
+    "message": "Cold start initialization failed"
   }
 }
 ```
@@ -277,15 +234,12 @@ Trigger the event source normally (upload file, send SQS message, etc.)
 - **Header manipulation:** Simulate missing or corrupted headers
 - **Body corruption:** Test handling of invalid request bodies
 
-**Example Experiment:**
+**Example Experiment Effect Statement:**
 ```json
 {
-  "name": "Corrupted API Request",
-  "type": "http_response",
-  "config": {
-    "status_code": 400,
-    "body": "Invalid request format",
-    "corrupt_body": true
+  "httpResponse": {
+    "code": 400,
+    "body": "QmFkIFJlcXVlc3QK", // "Bad Request" in base64
   }
 }
 ```
@@ -300,13 +254,11 @@ Trigger the event source normally (upload file, send SQS message, etc.)
 - **Response corruption:** Simulate network issues affecting response
 - **Error injection:** Return error status codes
 
-**Example Experiment:**
+**Example Experiment Effect Statement:**
 ```json
 {
-  "name": "Slow Response Simulation",
-  "type": "latency",
-  "config": {
-    "delay_ms": 5000
+  "latency": {
+    "ms": 5000
   }
 }
 ```
@@ -322,13 +274,16 @@ Trigger the event source normally (upload file, send SQS message, etc.)
 - **Network failures:** Test connection refused scenarios
 - **Data corruption:** Simulate corrupted responses from APIs
 
-**Example Experiment:**
+**Example Experiment Effect Statement:**
 ```json
 {
-  "name": "Database Timeout",
-  "type": "latency",
-  "config": {
-    "delay_ms": 30000
+  "latency": {
+    "ms": 3000,
+    "jitter": 250
+  },
+  "httpResponse": {
+    "code": 503,
+    "body": "U2VydmljZSBVbmF2YWlsYWJsZQo=", // "Service Unavailable" in base64
   }
 }
 ```
@@ -342,14 +297,15 @@ Trigger the event source normally (upload file, send SQS message, etc.)
 This is the safest way to begin experimenting:
 
 1. **Go to Gremlin UI**: [app.gremlin.com/failure-flags](https://app.gremlin.com/failure-flags/list)
-2. **Find your Lambda service** in the list
-3. **Select a dependency flag** (e.g., `dependency-api.example.com`)
 4. **Click "Create Experiment"**
 
 **Recommended First Experiment:**
-- **Type**: Latency
-- **Duration**: 30 seconds
-- **Delay**: 2000ms (2 seconds)
+- **Target your Lambda service** in the application list
+- **Select a flag** (e.g., `dependency-api.example.com`)
+- **Create a latency effect**
+  - **Type**: Latency
+  - **Delay**: 2000ms (2 seconds)
+- **Duration**: 5 minutes
 - **Percentage**: 50% (affects half of requests)
 
 ### 2. Test the Experiment
@@ -379,368 +335,3 @@ This is the safest way to begin experimenting:
    - How did your function handle the delay?
    - Did timeouts occur as expected?
    - Were error messages helpful?
-
----
-
-## Step 4: Progressive Experiment Strategy
-
-### Phase 1: Dependency Testing (Safest)
-
-Start with external dependencies as they're typically easier to handle:
-
-1. **API Latency**: Test response time tolerance
-   ```json
-   {"type": "latency", "config": {"delay_ms": 1000}}
-   ```
-
-2. **API Errors**: Test error handling
-   ```json
-   {"type": "http_response", "config": {"status_code": 500}}
-   ```
-
-3. **Connection Failures**: Test network resilience
-   ```json
-   {"type": "exception", "config": {"exception_type": "ConnectionError"}}
-   ```
-
-### Phase 2: Response Testing (Medium Risk)
-
-Test how clients handle your Lambda's responses:
-
-1. **Slow Responses**: Test client timeout handling
-   ```json
-   {"type": "latency", "config": {"delay_ms": 3000}}
-   ```
-
-2. **Error Responses**: Test client error handling
-   ```json
-   {"type": "http_response", "config": {"status_code": 503, "body": "Service temporarily unavailable"}}
-   ```
-
-### Phase 3: Ingress Testing (Higher Risk)
-
-Test Lambda invocation and initialization:
-
-1. **Memory Pressure**: Test low-memory scenarios
-   ```json
-   {"type": "exception", "config": {"exception_type": "MemoryError", "exception_message": "Out of memory"}}
-   ```
-
-2. **Initialization Failures**: Test cold start resilience
-   ```json
-   {"type": "exception", "config": {"exception_type": "RuntimeError", "exception_message": "Initialization failed"}}
-   ```
-
----
-
-## Step 5: Advanced Experiment Patterns
-
-### 1. Time-Based Experiments
-
-Test behavior during specific conditions:
-
-**Peak Traffic Simulation:**
-- Schedule experiments during known high-traffic periods
-- Combine with load testing for realistic scenarios
-
-**Maintenance Window Simulation:**
-- Test dependency failures during planned maintenance
-- Validate fallback mechanisms work correctly
-
-### 2. Cascading Failure Simulation
-
-Test how multiple failures interact:
-
-1. **Start with one dependency failure**
-2. **Add a second dependency failure** 10 minutes later
-3. **Inject response delays** to simulate system stress
-4. **Monitor overall system behavior**
-
-### 3. Customer-Specific Testing
-
-Target specific request patterns:
-
-**Use Labels/Conditions:**
-```json
-{
-  "conditions": {
-    "request_headers": {
-      "customer-tier": "premium"
-    }
-  }
-}
-```
-
-### 4. Gradual Escalation
-
-Increase experiment intensity over time:
-
-1. **Week 1**: 10% traffic, 1-second delays
-2. **Week 2**: 25% traffic, 2-second delays  
-3. **Week 3**: 50% traffic, 5-second delays
-4. **Week 4**: 100% traffic, 10-second delays
-
----
-
-## Step 6: Monitoring and Observability
-
-### Key Metrics to Watch
-
-**Lambda Metrics:**
-- Duration (should increase with latency experiments)
-- Error rate (should increase with error experiments)
-- Throttles (might increase under stress)
-- Memory utilization (watch for spikes)
-
-**CloudWatch Logs:**
-```bash
-# Monitor experiment activation
-aws logs filter-log-events \
-  --log-group-name /aws/lambda/your-function \
-  --filter-pattern "[DEBUG] Experiment activated"
-
-# Monitor errors
-aws logs filter-log-events \
-  --log-group-name /aws/lambda/your-function \
-  --filter-pattern "ERROR"
-```
-
-**Custom Application Metrics:**
-- Business KPIs (orders, signups, etc.)
-- Response times from client perspective
-- Error rates by customer segment
-
-### Setting Up Alerts
-
-**CloudWatch Alarms:**
-```json
-{
-  "MetricName": "Duration",
-  "Threshold": 10000,
-  "ComparisonOperator": "GreaterThanThreshold",
-  "EvaluationPeriods": 2,
-  "AlarmDescription": "Lambda duration spike during experiment"
-}
-```
-
-**Application-Level Monitoring:**
-- Set up alerts for unexpected error rates
-- Monitor customer-facing metrics
-- Create dashboards for experiment visibility
-
----
-
-## Step 7: Experiment Safety and Best Practices
-
-### Safety Checklist
-
-Before running any experiment:
-
-- [ ] **Start small**: Low percentage, short duration
-- [ ] **Monitor actively**: Watch dashboards during experiments  
-- [ ] **Have rollback ready**: Know how to stop experiments quickly
-- [ ] **Test during safe hours**: Avoid peak business times initially
-- [ ] **Communicate**: Notify team members about active experiments
-- [ ] **Document**: Keep records of what you're testing and why
-
-### Production Experiment Guidelines
-
-**DO:**
-- Start with non-critical dependencies
-- Use gradual percentage increases (5% → 10% → 25%)
-- Run short initial experiments (30 seconds to 2 minutes)
-- Monitor business metrics closely
-- Stop experiments immediately if issues arise
-
-**DON'T:**
-- Run experiments during peak business hours initially
-- Test critical path failures without team coordination
-- Run multiple experiments simultaneously when starting
-- Ignore monitoring during active experiments
-- Run experiments longer than necessary
-
-### Emergency Procedures
-
-**If Something Goes Wrong:**
-
-1. **Stop the experiment immediately**:
-   - Go to Gremlin UI → Active Experiments → Stop
-
-2. **Check system health**:
-   - Verify Lambda function returns to normal behavior
-   - Monitor error rates return to baseline
-   - Confirm customer-facing services recover
-
-3. **Document the incident**:
-   - What experiment was running?
-   - What unexpected behavior occurred?
-   - How long did it take to recover?
-   - What would you do differently?
-
----
-
-## Step 8: Common Experiment Scenarios for Lambda
-
-### Scenario 1: Testing API Gateway Timeout Handling
-
-**Objective**: Verify API Gateway timeout behavior when Lambda is slow
-
-**Setup:**
-```yaml
-# Experiment Config
-type: latency
-target: response
-config:
-  delay_ms: 35000  # API Gateway timeout is 30s
-percentage: 100
-duration: 60s
-```
-
-**Expected Results:**
-- API Gateway should return 504 Gateway Timeout
-- Clients should handle timeout gracefully
-- Retries should work correctly
-
-### Scenario 2: Testing Database Failover
-
-**Objective**: Validate database connection failover works correctly
-
-**Setup:**
-```yaml
-# Experiment Config  
-type: exception
-target: dependency-database.example.com
-config:
-  exception_type: ConnectionError
-  exception_message: Connection refused
-percentage: 100
-duration: 120s
-```
-
-**Expected Results:**
-- Lambda should fall back to read replica
-- Error handling should be graceful
-- Recovery should be automatic
-
-### Scenario 3: Testing SQS Processing Resilience
-
-**Objective**: Verify SQS message processing handles failures correctly
-
-**Setup:**
-```yaml
-# Experiment Config
-type: exception  
-target: ingress
-config:
-  exception_type: RuntimeError
-  exception_message: Message processing failed
-percentage: 30
-duration: 300s
-```
-
-**Expected Results:**
-- Failed messages should return to SQS queue
-- Retry logic should work correctly
-- Dead letter queue should capture persistent failures
-
-### Scenario 4: Testing Memory Pressure
-
-**Objective**: Understand behavior when Lambda approaches memory limits
-
-**Setup:**
-```yaml
-# Experiment Config
-type: exception
-target: ingress
-config:
-  exception_type: MemoryError
-  exception_message: Insufficient memory
-percentage: 20
-duration: 180s
-```
-
-**Expected Results:**
-- Lambda should handle memory errors gracefully
-- Monitoring should detect memory issues
-- Function should recover after experiment
-
----
-
-## Troubleshooting Experiment Issues
-
-### Experiments Not Triggering
-
-**Symptoms:**
-- Experiment shows as "Active" in Gremlin UI
-- No behavior changes observed
-- No experiment logs in CloudWatch
-
-**Debugging:**
-1. **Enable debug logging**: `GREMLIN_DEBUG=true`
-2. **Check proxy configuration**:
-   ```yaml
-   lambda_proxy_enabled: true
-   dependency_proxy_enabled: true
-   ```
-3. **Verify traffic routing**:
-   ```bash
-   # Check HTTP_PROXY settings
-   echo $HTTP_PROXY
-   echo $HTTPS_PROXY
-   ```
-4. **Confirm flag registration**:
-   - Look for "Service registered" in logs
-   - Verify flags appear in Gremlin UI
-
-### Experiments Causing Unexpected Behavior
-
-**Symptoms:**
-- More impact than expected
-- Different behavior than configured
-- System instability
-
-**Immediate Actions:**
-1. **Stop experiment immediately**
-2. **Check experiment configuration**:
-   - Percentage setting
-   - Duration setting  
-   - Target flag selection
-3. **Monitor recovery**:
-   - Function returns to normal
-   - Error rates decrease
-   - Performance metrics normalize
-
-### Cannot Stop Experiments
-
-**Symptoms:**
-- "Stop" button doesn't work
-- Experiment continues after stopping
-- Sidecar not responding
-
-**Actions:**
-1. **Restart Lambda function**:
-   ```bash
-   aws lambda update-function-configuration \
-     --function-name your-function \
-     --description "Force restart - $(date)"
-   ```
-
-2. **Check sidecar logs** for errors
-3. **Verify network connectivity** to Gremlin API
-
----
-
-## Next Steps
-
-After mastering Lambda experiments:
-
-1. **Expand to other platforms**: Try [ECS](quickstart-ecs.md) or [Kubernetes](quickstart-kubernetes.md)
-2. **Automate experiments**: Use Gremlin API to script regular testing
-3. **Integrate with CI/CD**: Add chaos testing to deployment pipelines
-4. **Team training**: Share knowledge and expand experiment practices
-5. **Advanced scenarios**: Test multi-service failures and complex scenarios
-
-For more advanced configurations and troubleshooting, see:
-- [Configuration Guide](configuration-guide.md)
-- [Troubleshooting Guide](troubleshooting-guide.md)
-- [Building Lambda Layers](build-lambda-layer.md)
