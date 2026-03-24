@@ -50,7 +50,7 @@ functions:
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
       GREMLIN_DEBUG: false
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
-      GREMLIN_REFRESH_INTERVAL: 15000 # refresh
+      GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
       - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
     events:
@@ -75,7 +75,7 @@ functions:
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
       GREMLIN_DEBUG: false
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
-      GREMLIN_REFRESH_INTERVAL: 15000 # refresh
+      GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
       - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
     events:
@@ -98,7 +98,7 @@ functions:
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
       GREMLIN_DEBUG: false
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
-      GREMLIN_REFRESH_INTERVAL: 15000 # refresh
+      GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
       - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
     events:
@@ -120,7 +120,7 @@ functions:
       GREMLIN_TEAM_PRIVATE_KEY: ${file(./secrets/${self:custom.credentialsFile}):team_private_key}
       GREMLIN_DEBUG: false
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
-      GREMLIN_REFRESH_INTERVAL: 15000 # refresh
+      GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
       - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:14
     events:

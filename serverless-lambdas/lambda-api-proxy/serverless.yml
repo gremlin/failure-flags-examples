@@ -48,7 +48,7 @@ functions:
       GREMLIN_LAMBDA_ENABLED: true
       GREMLIN_DEBUG: true
       GREMLIN_API_ENDPOINT_URL: ${file(../serverless.yml):custom.endpoint}/ff
-      GREMLIN_REFRESH_INTERVAL: 15000 # refresh
+      GREMLIN_REFRESH_INTERVAL: 15s # refresh
       #GREMLIN_REQUEST_TIMEOUT: 2000ms # required for staging environment
       GREMLIN_LAMBDA_API_PROXY_ENABLED: true
       GREMLIN_LAMBDA_API_PROXY_PORT: localhost:6033
