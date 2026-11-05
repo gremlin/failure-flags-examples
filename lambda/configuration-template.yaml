@@ -125,12 +125,12 @@ team_private_key: |
 ## -------------------------------------------
 
 ## Enables a special proxy for the AWS Lambda Runtime API. This proxy allows
-## for simple experimentation on AWS Lambda functions withouut code changes.
+## for simple experimentation on AWS Lambda functions without code changes.
 ## Override with GREMLIN_LAMBDA_PROXY_ENABLED. Value must be `true` or `1`.
 lambda_proxy_enabled: true
 
 ## This port must match the AWS_LAMBDA_RUNTIME_API value set in your function.
-## Make sure to use the included boostratp script. Defaults to localhost:5033.
+## Make sure to use the included bootstrap script. Defaults to localhost:5033.
 ## Override with GREMLIN_LAMBDA_PROXY_PORT.
 #lambda_proxy_port: localhost:5033
 
@@ -150,7 +150,7 @@ dependency_proxy_enabled: true
 ## This sets the bind address of the HTTP CONNECT proxy. The proxy will only
 ## bind on localhost and this value must specify localhost (or 127.0.0.1 or ::1)
 ## and the port. This defaults to localhost:5034.
-## Override this value with GREMLIN_DEPENDENCY_PROXY_ENABLED.
+## Override this value with GREMLIN_DEPENDENCY_PROXY_PORT.
 #dependency_proxy_port: localhost:5034
 
 ## Ingress Proxy Mode
@@ -158,7 +158,7 @@ dependency_proxy_enabled: true
 ## This mode routes inbound traffic to your service.
 
 ## Uncomment this property to enable the reverse proxy and begin experimenting
-## on inbound requests and responses to those requests without any additinoal
+## on inbound requests and responses to those requests without any additional
 ## changes to your application code. Enabling this requires that the next two 
 ## properties are specified. 
 ## Override this value with GREMLIN_INGRESS_PROXY_ENABLED=true

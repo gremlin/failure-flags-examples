@@ -1,31 +1,28 @@
-apply plugin: 'java'
-
-//group 'com.gremlin'
-//version '0.1-SNAPSHOT'
+plugins {
+    id 'java'
+}
 
 repositories {
     mavenCentral()
     maven {
-      url 'https://maven.gremlin.com/'
+        url = 'https://maven.gremlin.com/'
     }
 }
 
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
-
-dependencies {
-    implementation(
-        'com.amazonaws:aws-lambda-java-core:1.1.0',
-        'com.amazonaws:aws-lambda-java-log4j:1.0.0',
-        'com.fasterxml.jackson.core:jackson-core:2.8.5',
-        'com.fasterxml.jackson.core:jackson-databind:2.8.5',
-        'com.fasterxml.jackson.core:jackson-annotations:2.8.5',
-        'com.gremlin:failure-flags-java:1.1'
-    )
+// Compile to Java 17 bytecode so the example builds on any JDK 17 or newer.
+// The function itself is deployed to the java21 Lambda runtime.
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
 }
 
-task buildZip(type: Zip) {
-    archiveBaseName = "demo"
+dependencies {
+    implementation 'com.amazonaws:aws-lambda-java-core:1.4.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.4'
+    implementation 'com.gremlin:failure-flags-java:1.2'
+}
+
+tasks.register('buildZip', Zip) {
+    archiveBaseName = 'demo'
     from compileJava
     from processResources
     into('lib') {
@@ -34,4 +31,6 @@ task buildZip(type: Zip) {
     }
 }
 
-build.dependsOn buildZip
+tasks.named('build') {
+    dependsOn 'buildZip'
+}

@@ -2,7 +2,7 @@ REGION        := us-west-1
 PREFIX        := ff-examples
 RUNTIME       := nodejs24.x
 ARCHITECTURE  := arm64
-LAYER_VERSION ?= 9
+LAYER_VERSION ?= 32
 LAYER_BASE    ?= arn:aws:lambda:$(REGION):044815399860:layer:gremlin-lambda-v2-$(ARCHITECTURE):$(LAYER_VERSION)
 ROLE_NAME     := ff-examples-execution-role
 API_NAME      := ff-examples-api
@@ -115,12 +115,14 @@ cleanup:
 		echo "  Role deleted." || echo "  Role not found, skipping."
 	rm -f $(ZIPS)
 
+GREMLIN_ENV := ,GREMLIN_LAMBDA_ENABLED=true,AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap,HTTP_PROXY=http://localhost:5034
+
 deploy: LAYERS_FLAG := --layers $(LAYER_BASE)
-deploy: GREMLIN_DEPLOY := true
+deploy: GREMLIN_DEPLOY_ENV := $(GREMLIN_ENV)
 deploy: _deploy
 
 deploy-raw: LAYERS_FLAG :=
-deploy-raw: GREMLIN_DEPLOY :=
+deploy-raw: GREMLIN_DEPLOY_ENV :=
 deploy-raw: _deploy
 
 _deploy: package
@@ -170,14 +172,15 @@ _deploy: package
 		--role-name $(ROLE_NAME) \
 		--policy-name secrets-access \
 		--policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"secretsmanager:GetSecretValue\",\"Resource\":\"$$SECRET_ARN\"}]}"; \
-	APP_ENV_FLAG="--environment Variables={GREMLIN_CONFIG_ARN=$$SECRET_ARN,GREMLIN_SIDECAR_ENABLED=true,AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap,HTTP_PROXY=http://localhost:5034}"; \
-	ROUTER_ENV="--environment Variables={SERVICE_A_FUNCTION=$(PREFIX)-serviceA,SERVICE_B_FUNCTION=$(PREFIX)-serviceB,SERVICE_C_FUNCTION=$(PREFIX)-serviceC,GREMLIN_CONFIG_ARN=$$SECRET_ARN,GREMLIN_SIDECAR_ENABLED=true,AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap,HTTP_PROXY=http://localhost:5034}"; \
+	APP_ENV_FLAG="--environment Variables={GREMLIN_CONFIG_ARN=$$SECRET_ARN$(GREMLIN_DEPLOY_ENV)}"; \
+	ROUTER_ENV="--environment Variables={SERVICE_A_FUNCTION=$(PREFIX)-serviceA,SERVICE_B_FUNCTION=$(PREFIX)-serviceB,SERVICE_C_FUNCTION=$(PREFIX)-serviceC,GREMLIN_CONFIG_ARN=$$SECRET_ARN$(GREMLIN_DEPLOY_ENV)}"; \
 	for app in echo serviceA serviceB serviceC; do \
 		echo "Deploying $(PREFIX)-$$app..."; \
 		if aws lambda get-function --function-name $(PREFIX)-$$app --region $(REGION) > /dev/null 2>&1; then \
 			aws lambda update-function-code \
 				--function-name $(PREFIX)-$$app \
 				--zip-file fileb://$$app.zip \
+				--architectures $(ARCHITECTURE) \
 				--region $(REGION) > /dev/null && \
 			aws lambda wait function-updated \
 				--function-name $(PREFIX)-$$app \
@@ -186,7 +189,6 @@ _deploy: package
 				--function-name $(PREFIX)-$$app \
 				--runtime $(RUNTIME) \
 				$(LAYERS_FLAG) \
-				--architectures $(ARCHITECTURE) \
 				$$APP_ENV_FLAG \
 				--region $(REGION) > /dev/null; \
 		else \
@@ -208,6 +210,7 @@ _deploy: package
 		aws lambda update-function-code \
 			--function-name $(PREFIX)-router \
 			--zip-file fileb://router.zip \
+			--architectures $(ARCHITECTURE) \
 			--region $(REGION) > /dev/null && \
 		aws lambda wait function-updated \
 			--function-name $(PREFIX)-router \
@@ -216,7 +219,6 @@ _deploy: package
 			--function-name $(PREFIX)-router \
 			--runtime $(RUNTIME) \
 			$(LAYERS_FLAG) \
-			--architectures $(ARCHITECTURE) \
 			$$ROUTER_ENV \
 			--region $(REGION) > /dev/null; \
 	else \

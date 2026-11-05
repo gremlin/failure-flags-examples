@@ -14,15 +14,15 @@ This is another simple Lambda function that serves HTTP requests from an API Gat
 
 ### App: ServiceA
 
-Service A always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is recieved. Body should always be a static value "Service A called."
+Service A always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is received. Body should always be a static value "Service A called."
 
 ### App: ServiceB
 
-Service B always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is recieved. Body should always be a static value "Service A called."
+Service B always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is received. Body should always be a static value "Service B called."
 
 ### App: ServiceC
 
-Service C always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is recieved. Body should always be a static value "Service A called."
+Service C always responds with a JSON payload containing two fields: timestamp, and body. Timestamp should always be the timestamp that the request is received. Body should always be a static value "Service C called."
 
 ## Technology constraints
 

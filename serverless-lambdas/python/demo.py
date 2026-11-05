@@ -1,25 +1,28 @@
-import os
-import logging
-import jsonpickle
 import json
+import logging
 import time
-from failureflags import FailureFlag 
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
+from failureflags import FailureFlag
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-patch_all()
+# The SDK writes debug output to the "failureflags" logger. Lower its level so
+# that debug=True below is visible in CloudWatch Logs.
+logging.getLogger("failureflags").setLevel(logging.DEBUG)
 
 def handler(event, context):
     now = time.gmtime()
     start = time.time()
 
+    http = (event or {}).get('requestContext', {}).get('http', {})
+
     # Note: This is an example of a line you need to add to
     # your application code for each failure flag.
     active, impacted, _ = FailureFlag(
             "http-ingress", # name of the failure flag
-            {}, # dict of labels with dynamic invocation context
+            { # dict of labels with dynamic invocation context
+                "method": http.get("method", ""),
+                "path": http.get("path", ""),
+            },
             debug=True).invoke()
     end = time.time()
     return {

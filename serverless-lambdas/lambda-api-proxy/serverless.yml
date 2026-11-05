@@ -1,5 +1,5 @@
 # For local-testing, place a copy of layer-gremlin-lambda-arm64.zip in the ../local folder.
-# The function can also use a published layer via a specified arm (ex. arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:14)
+# The function can also use a published layer via a specified arm (ex. arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-v2-arm64:32)
 # To create the stack, navigate to the lambda-api-proxy folder and run 'sls deploy --stage <desired stage name>'
 # To delete the stack when you are done, navigate to the lambda-api-proxy folder and run 'sls delete --stage <desired stage name>'
 service: lambda-api-proxy-example
@@ -37,7 +37,7 @@ functions:
       patterns:
       - '../node/**'
     handler: node/index.handler
-    runtime: nodejs22.x
+    runtime: nodejs24.x
     architecture: arm64
     memorySize: 256
     environment:
@@ -47,7 +47,7 @@ functions:
       GREMLIN_TEAM_PRIVATE_KEY: ${file(../secrets/${file(../serverless.yml):custom.credentialsFile}):team_private_key}
       GREMLIN_LAMBDA_ENABLED: true
       GREMLIN_DEBUG: true
-      GREMLIN_API_ENDPOINT_URL: ${file(../serverless.yml):custom.endpoint}/ff
+      GREMLIN_API_ENDPOINT_URL: ${file(../serverless.yml):custom.endpoint}
       GREMLIN_REFRESH_INTERVAL: 15s # refresh
       #GREMLIN_REQUEST_TIMEOUT: 2000ms # required for staging environment
       GREMLIN_LAMBDA_API_PROXY_ENABLED: true

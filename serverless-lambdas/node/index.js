@@ -1,13 +1,8 @@
-const http = require('http');
 // Note: you must bring in the failure-flags library
 const gremlin = require('@gremlin/failure-flags');
 
-function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 module.exports.handler = async (event) => {
-  start = Date.now();
+  const start = Date.now();
 
   // Note: This is an example of a line you need to add to 
   // your application code for each failure flag.

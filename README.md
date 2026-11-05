@@ -8,9 +8,12 @@ The Lambda examples in this repository include example Lambda applications and a
 
 ## Kubernetes
 
-The Kubernetes example uses Failure Flags by Proxy and the canonical Istio demo application. As is this example will pull the latest release of the Failure Flags Sidecar, however it will prefer local cached images for `gremlin/failure-flags-sidecar:latest`. To use this example you will need to provide a completed configuration file in a Kubernetes secret named, `exaxmple-gremlin-secret` and contain a file named, `example-config.yaml`. You can use the following configuration file and replace the values for `team_id`, `team_certificate`, and `team_private_key`.
+The Kubernetes example in the `kubernetes` directory uses Failure Flags by Proxy and the canonical Istio demo application. It runs the `gremlin/failure-flags-sidecar:v2` image, and uses a locally cached copy of that image if one is present. To use this example you will need to provide a completed configuration file in a Kubernetes secret named `example-gremlin-secret`, containing a file named `example-config.yaml`. Start from `kubernetes/example-config.yaml` and replace the values for `team_id`, `team_certificate`, and `team_private_key`.
 
-1. Edit your copy of `example-config.yaml` with your team ID, certificate, and private key.
-2. Run `kubectl create secret generic --from-file ./example-config.yaml example-gremlin-secret`
+Run the following from the `kubernetes` directory:
+
+1. Copy `example-config.yaml` to `secrets/example-config.yaml` and edit the copy with your team ID, certificate, and private key. The `secrets` directory is ignored by git, so your credentials stay out of the repository.
+2. Run `kubectl create secret generic example-gremlin-secret --from-file ./secrets/example-config.yaml`
 3. Run `kubectl apply -f ./bookinfo.yaml`
-4. Open the example app at http://localhost:30007/
+4. Run `kubectl apply -f ./expose.yaml` to expose the product page on NodePort 30007
+5. Open the example app at http://localhost:30007/
