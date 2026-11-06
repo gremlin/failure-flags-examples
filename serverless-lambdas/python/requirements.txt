@@ -1,3 +1,1 @@
-jsonpickle==1.3
-aws-xray-sdk==2.4.3
-failureflags>=1.0.0
+failureflags>=1.1.0

@@ -64,10 +64,7 @@ The traditional approach involves integrating Failure Flags SDKs directly into y
 
 **Example Integration:**
 ```javascript
-const { FailureFlags } = require('@gremlin/failure-flags');
-
-// Initialize the SDK
-const failureFlags = new FailureFlags();
+const gremlin = require('@gremlin/failure-flags');
 
 await gremlin.invokeFailureFlag({
   name: 'http-ingress',  // provide a human-friendly name for the point in code
@@ -181,7 +178,7 @@ To get started with Failure Flags:
 5. **Create your first experiment** to validate system resilience
 
 For detailed implementation guides, see:
-- [Configuration Guide](docs/configuration-guide.md)
-- [AWS Lambda Quickstart](docs/quickstart-lambda.md)
-- [Kubernetes Quickstart](docs/quickstart-kubernetes.md)
-- [AWS ECS Quickstart](docs/quickstart-ecs.md)
+- [Configuration Guide](./configuration-guide.md)
+- [AWS Lambda Quickstart](./quickstart-lambda.md)
+- [Kubernetes Quickstart](./quickstart-kubernetes.md)
+- [AWS ECS Quickstart](./quickstart-ecs.md)

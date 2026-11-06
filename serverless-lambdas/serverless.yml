@@ -10,15 +10,15 @@ custom:
   prefix: '${self:service}-${opt:stage, "main"}'
   stages:
     main:
-      endpoint: https://beta.gremlin.com/v1
+      endpoint: https://api.gremlin.com/v1/ff
       credentialsFile: credentials.yml
     staging:
-      endpoint: https://beta.staging.gremlin.com/v1
+      endpoint: https://api.staging.gremlin.com/v1/ff
       credentialsFile: credentials-staging.yml
     prod:
-      endpoint: https://beta.gremlin.com/v1
+      endpoint: https://api.gremlin.com/v1/ff
       credentialsFile: credentials.yml
-  endpoint: ${self:custom.stages.${opt:stage, 'main'}.endpoint, 'https://beta.gremlin.com/v1'}
+  endpoint: ${self:custom.stages.${opt:stage, 'main'}.endpoint, 'https://api.gremlin.com/v1/ff'}
   credentialsFile: ${self:custom.stages.${opt:stage, 'main'}.credentialsFile, 'credentials.yml'}
 
 provider:
@@ -39,7 +39,7 @@ functions:
       patterns:
       - 'node/**'
     handler: node/index.handler
-    runtime: nodejs16.x
+    runtime: nodejs24.x
     architecture: arm64
     memorySize: 256
     environment:
@@ -52,7 +52,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-v2-arm64:32
     events:
       - httpApi:
           path: /node-demo
@@ -64,7 +64,7 @@ functions:
         - 'python/*'
     module: python
     handler: demo.handler
-    runtime: python3.11
+    runtime: python3.13
     architecture: arm64
     memorySize: 256
     environment:
@@ -77,7 +77,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-v2-arm64:32
     events:
       - httpApi:
           path: /py-demo
@@ -87,7 +87,7 @@ functions:
     package:
       artifact: 'go/function.zip'
     handler: bootstrap
-    runtime: provided.al2
+    runtime: provided.al2023
     architecture: arm64
     memorySize: 256
     environment:
@@ -100,7 +100,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-arm64:14
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-v2-arm64:32
     events:
       - httpApi:
           path: /go-demo
@@ -110,7 +110,7 @@ functions:
     package:
       artifact: java/build/distributions/demo.zip
     handler: com.gremlin.demo.failureflags.demo.Handler
-    runtime: java17
+    runtime: java21
     memorySize: 256
     environment:
       FAILURE_FLAGS_ENABLED: true
@@ -122,7 +122,7 @@ functions:
       GREMLIN_API_ENDPOINT_URL: ${self:custom.endpoint}
       GREMLIN_REFRESH_INTERVAL: 15s # refresh
     layers:
-      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-x86_64:14
+      - arn:aws:lambda:${self:custom.region}:044815399860:layer:gremlin-lambda-v2-x86_64:32
     events:
       - httpApi:
           path: /java-demo
