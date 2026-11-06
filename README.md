@@ -8,7 +8,7 @@ The Lambda examples in this repository include example Lambda applications and a
 
 ## Kubernetes
 
-The Kubernetes example in the `kubernetes` directory uses Failure Flags by Proxy and the canonical Istio demo application. It runs the `gremlin/failure-flags-sidecar:v2` image, and uses a locally cached copy of that image if one is present. To use this example you will need to provide a completed configuration file in a Kubernetes secret named `example-gremlin-secret`, containing a file named `example-config.yaml`. Start from `kubernetes/example-config.yaml` and replace the values for `team_id`, `team_certificate`, and `team_private_key`.
+The Kubernetes example in the `kubernetes` directory uses Failure Flags by Proxy and the canonical Istio demo application. It runs the `gremlin/failure-flags-sidecar:latest` image, and uses a locally cached copy of that image if one is present. To use this example you will need to provide a completed configuration file in a Kubernetes secret named `example-gremlin-secret`, containing a file named `example-config.yaml`. Start from `kubernetes/example-config.yaml` and replace the values for `team_id`, `team_certificate`, and `team_private_key`.
 
 Run the following from the `kubernetes` directory:
 

@@ -50,7 +50,7 @@ On first run this will:
 1. Build ZIP packages for each function
 2. Create an IAM execution role (`ff-examples-execution-role`) with permissions for CloudWatch Logs and Lambda invocation
 3. Create a Secrets Manager secret (`ff-examples-config`) from `secrets/configuration.yaml` and grant the execution role access to read it
-4. Create all five Lambda functions in `us-west-1` with the Gremlin layer attached and the `GREMLIN_CONFIG_ARN`, `GREMLIN_LAMBDA_ENABLED`, `AWS_LAMBDA_EXEC_WRAPPER`, and `HTTP_PROXY` environment variables set
+4. Create all five Lambda functions in `us-west-1` with the Gremlin layer attached and the `GREMLIN_CONFIG_ARN`, `GREMLIN_LAMBDA_ENABLED`, `AWS_LAMBDA_EXEC_WRAPPER`, and `HTTP_PROXY` environment variables set. `GREMLIN_CONFIG_ARN_ROLE` can optionally be set.
 5. Create an HTTP API Gateway (`ff-examples-api`) wired to the router
 6. Print the live URL
 
